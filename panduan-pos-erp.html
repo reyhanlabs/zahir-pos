@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan POS ERP / POS ERP User Guide</title>
+<style>
+  :root {
+    --primary: #2196F3;
+    --primary-dark: #1565C0;
+    --primary-light: #E3F2FD;
+    --accent-green: #4CAF50;
+    --accent-orange: #FF9800;
+    --accent-red: #F44336;
+    --accent-purple: #9C27B0;
+    --bg: #F5F6FA;
+    --surface: #FFFFFF;
+    --border: #E0E7EF;
+    --text: #1A2332;
+    --text-secondary: #5A6880;
+    --text-light: #9EAAB8;
+    --nav-height: 64px;
+    --sidebar-width: 280px;
+    --shadow: 0 2px 12px rgba(33,150,243,0.09);
+    --shadow-md: 0 6px 28px rgba(33,150,243,0.13);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ─── TOP BAR ───────────────────────── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: var(--nav-height);
+    background: linear-gradient(90deg, #1565C0 0%, #2196F3 100%);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    box-shadow: 0 2px 16px rgba(21,101,192,0.25);
+    gap: 16px;
+  }
+
+  .topbar-logo {
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .topbar-logo .logo-box {
+    width: 38px; height: 38px;
+    background: white; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; color: var(--primary); font-size: 18px;
+  }
+
+  .topbar-logo .logo-label {
+    font-size: 18px; font-weight: 800; color: white;
+    letter-spacing: -0.3px;
+  }
+
+  .topbar-title {
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .topbar-spacer { flex: 1; }
+
+  /* Language Toggle */
+  .lang-toggle {
+    display: flex; align-items: center;
+    background: rgba(255,255,255,0.18);
+    border-radius: 99px;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .lang-btn {
+    padding: 5px 14px;
+    border-radius: 99px;
+    border: none;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .lang-btn.active {
+    background: white;
+    color: var(--primary);
+  }
+
+  /* ─── LAYOUT ────────────────────────── */
+  .layout {
+    display: flex;
+    margin-top: var(--nav-height);
+    min-height: calc(100vh - var(--nav-height));
+  }
+
+  /* ─── SIDEBAR ───────────────────────── */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 20px 0;
+    z-index: 100;
+  }
+
+  .sidebar-section {
+    padding: 0 16px;
+    margin-bottom: 6px;
+  }
+
+  .sidebar-heading {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    padding: 12px 12px 6px;
+  }
+
+  .sidebar-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.16s;
+    text-decoration: none;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+
+  .sidebar-link:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .sidebar-link.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .sidebar-link .sl-icon { font-size: 15px; flex-shrink: 0; }
+  .sidebar-link .sl-num {
+    margin-left: auto; font-size: 11px;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 1px 7px; border-radius: 99px;
+    font-weight: 700;
+    display: none;
+  }
+  .sidebar-link.active .sl-num { display: block; }
+
+  /* ─── MAIN CONTENT ─────────────────── */
+  .main {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    padding: 40px 48px;
+    max-width: calc(100% - var(--sidebar-width));
+  }
+
+  /* ─── HERO ──────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #1565C0 0%, #2196F3 60%, #42A5F5 100%);
+    border-radius: 20px;
+    padding: 48px 48px 44px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 260px; height: 260px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -60px; right: 80px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.2);
+    color: white; font-size: 12px; font-weight: 700;
+    padding: 4px 14px; border-radius: 99px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .hero h1 { font-size: 32px; font-weight: 900; color: white; margin-bottom: 10px; line-height: 1.2; }
+  .hero p  { color: rgba(255,255,255,0.82); font-size: 16px; max-width: 520px; }
+
+  .hero-meta {
+    display: flex; gap: 24px; margin-top: 28px;
+  }
+
+  .hero-meta-item {
+    display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.8); font-size: 13px;
+  }
+
+  .hero-meta-item .hm-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+  }
+
+  /* ─── SECTION ───────────────────────── */
+  .section {
+    margin-bottom: 52px;
+    scroll-margin-top: calc(var(--nav-height) + 24px);
+  }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--primary-light);
+  }
+
+  .section-num {
+    width: 40px; height: 40px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; color: white;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  .section-title { font-size: 22px; font-weight: 800; color: var(--text); }
+  .section-subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ─── STEP CARDS ────────────────────── */
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+
+  .step-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    display: flex; gap: 18px;
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .step-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  .step-num {
+    width: 34px; height: 34px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .step-content { flex: 1; }
+  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+  .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ─── FEATURE GRID ──────────────────── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
+  }
+
+  .feature-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+  .fc-icon {
+    font-size: 28px; margin-bottom: 12px; display: block;
+  }
+
+  .fc-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .fc-desc  { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ─── INFO BOXES ────────────────────── */
+  .info-box {
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 13px;
+    line-height: 1.65;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+
+  .info-box .ib-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .info-box .ib-content { flex: 1; }
+  .info-box strong { font-weight: 700; display: block; margin-bottom: 3px; }
+
+  .info-tip    { background: #E8F5E9; border-left: 4px solid #4CAF50; color: #2E7D32; }
+  .info-warn   { background: #FFF8E1; border-left: 4px solid #FF9800; color: #E65100; }
+  .info-note   { background: var(--primary-light); border-left: 4px solid var(--primary); color: var(--primary-dark); }
+  .info-danger { background: #FFEBEE; border-left: 4px solid #F44336; color: #B71C1C; }
+
+  /* ─── CODE BLOCK ────────────────────── */
+  .code-block {
+    background: #1A2332;
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    font-size: 12.5px;
+    color: #A8D5FF;
+    overflow-x: auto;
+    margin: 10px 0;
+    line-height: 1.8;
+  }
+
+  .code-block .cm { color: #6A8F5A; }
+  .code-block .ck { color: #F4A261; }
+  .code-block .cs { color: #B8EAD2; }
+
+  /* ─── TABLE ─────────────────────────── */
+  .guide-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px; margin: 14px 0;
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .guide-table th {
+    background: var(--primary);
+    color: white;
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .guide-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    vertical-align: top;
+  }
+
+  .guide-table tbody tr:last-child td { border-bottom: none; }
+  .guide-table tbody tr:hover td { background: var(--primary-light); }
+
+  /* ─── SCREENSHOT MOCK ───────────────── */
+  .screen-mock {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: var(--shadow-md);
+  }
+
+  .mock-bar {
+    height: 44px;
+    background: var(--primary);
+    display: flex; align-items: center;
+    padding: 0 18px; gap: 12px;
+  }
+
+  .mock-bar .mb-dots { display: flex; gap: 6px; }
+  .mock-bar .mb-dot  { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+  .mock-bar .mb-title { color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin-left: 6px; }
+
+  .mock-body { padding: 20px; background: var(--bg); }
+
+  /* ─── BADGE ─────────────────────────── */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; border-radius: 99px;
+    font-size: 11px; font-weight: 700;
+  }
+  .badge-blue   { background: #E3F2FD; color: #1565C0; }
+  .badge-green  { background: #E8F5E9; color: #2E7D32; }
+  .badge-orange { background: #FFF3E0; color: #E65100; }
+  .badge-red    { background: #FFEBEE; color: #C62828; }
+  .badge-purple { background: #F3E5F5; color: #6A1B9A; }
+
+  /* ─── ROLE TABLE ────────────────────── */
+  .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+
+  .role-card {
+    background: white; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px;
+    text-align: center; box-shadow: var(--shadow);
+  }
+
+  .role-card .rc-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .role-card .rc-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .role-card .rc-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ─── DIVIDER ───────────────────────── */
+  hr.divider { border: none; border-top: 1.5px solid var(--border); margin: 40px 0; }
+
+  /* ─── FOOTER ────────────────────────── */
+  .footer {
+    margin-top: 60px; padding-top: 32px;
+    border-top: 1.5px solid var(--border);
+    text-align: center;
+    color: var(--text-light);
+    font-size: 13px;
+    padding-bottom: 48px;
+  }
+
+  .footer strong { color: var(--primary); }
+
+  /* ─── LANG SECTIONS ─────────────────── */
+  .lang-id .en { display: none; }
+  .lang-id .id { display: block; }
+  .lang-en .id { display: none; }
+  .lang-en .en { display: block; }
+
+  /* inline bilingual */
+  span.id, span.en { display: inline; }
+  .lang-en span.id { display: none; }
+  .lang-id span.en { display: none; }
+
+  /* ─── SCROLL PROGRESS ───────────────── */
+  .progress-bar {
+    position: fixed; top: var(--nav-height); left: var(--sidebar-width); right: 0;
+    height: 3px; background: var(--primary); z-index: 150;
+    transform-origin: left; transform: scaleX(0);
+    transition: transform 0.1s linear;
+  }
+
+  /* ─── RESPONSIVE ────────────────────── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 20px; max-width: 100%; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body class="lang-id">
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progress-bar"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-box">Z</div>
+    <span class="logo-label">POS ERP</span>
+  </div>
+  <span class="topbar-title">
+    <span class="id">Panduan Penggunaan</span>
+    <span class="en">User Guide</span>
+  </span>
+  <div class="topbar-spacer"></div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-id" onclick="setLang('id')">🇮🇩 ID</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇺🇸 EN</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-heading id">Daftar Isi</div>
+    <div class="sidebar-heading en">Table of Contents</div>
+    <div class="sidebar-section">
+      <a class="sidebar-link active" href="#sec-intro" onclick="scrollTo('sec-intro')">
+        <span class="sl-icon">🏠</span>
+        <span class="id">Pendahuluan</span>
+        <span class="en">Introduction</span>
+      </a>
+      <a class="sidebar-link" href="#sec-setup" onclick="scrollTo('sec-setup')">
+        <span class="sl-icon">⚙️</span>
+        <span class="id">Setup Awal</span>
+        <span class="en">Initial Setup</span>
+      </a>
+      <a class="sidebar-link" href="#sec-login" onclick="scrollTo('sec-login')">
+        <span class="sl-icon">🔐</span>
+        <span class="id">Login</span>
+        <span class="en">Login</span>
+      </a>
+      <a class="sidebar-link" href="#sec-dashboard" onclick="scrollTo('sec-dashboard')">
+        <span class="sl-icon">📊</span>
+        <span class="id">Dashboard</span>
+        <span class="en">Dashboard</span>
+      </a>
+      <a class="sidebar-link" href="#sec-pos" onclick="scrollTo('sec-pos')">
+        <span class="sl-icon">🛒</span>
+        <span class="id">Point of Sales</span>
+        <span class="en">Point of Sales</span>
+      </a>
+      <a class="sidebar-link" href="#sec-product" onclick="scrollTo('sec-product')">
+        <span class="sl-icon">📦</span>
+        <span class="id">Manajemen Produk</span>
+        <span class="en">Product Management</span>
+      </a>
+      <a class="sidebar-link" href="#sec-customer" onclick="scrollTo('sec-customer')">
+        <span class="sl-icon">👥</span>
+        <span class="id">Data Customer</span>
+        <span class="en">Customer Data</span>
+      </a>
+      <a class="sidebar-link" href="#sec-report" onclick="scrollTo('sec-report')">
+        <span class="sl-icon">📈</span>
+        <span class="id">Laporan</span>
+        <span class="en">Reports</span>
+      </a>
+      <a class="sidebar-link" href="#sec-settings" onclick="scrollTo('sec-settings')">
+        <span class="sl-icon">🏪</span>
+        <span class="id">Pengaturan & User</span>
+        <span class="en">Settings & Users</span>
+      </a>
+      <a class="sidebar-link" href="#sec-roles" onclick="scrollTo('sec-roles')">
+        <span class="sl-icon">🔑</span>
+        <span class="id">Hak Akses</span>
+        <span class="en">Access Roles</span>
+      </a>
+      <a class="sidebar-link" href="#sec-faq" onclick="scrollTo('sec-faq')">
+        <span class="sl-icon">❓</span>
+        <span class="id">FAQ</span>
+        <span class="en">FAQ</span>
+      </a>
+      <a class="sidebar-link" href="#sec-firebase" onclick="scrollTo('sec-firebase')">
+        <span class="sl-icon">🔥</span>
+        <span class="id">Panduan Firebase</span>
+        <span class="en">Firebase Guide</span>
+      </a>
+      <a class="sidebar-link" href="#sec-deploy" onclick="scrollTo('sec-deploy')">
+        <span class="sl-icon">🚀</span>
+        <span class="id">Deploy ke Vercel</span>
+        <span class="en">Deploy to Vercel</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge">
+        <span>⚡</span>
+        <span class="id">Panduan Lengkap</span>
+        <span class="en">Complete Guide</span>
+      </div>
+      <h1 class="id">Panduan Penggunaan<br>Aplikasi POS ERP</h1>
+      <h1 class="en">User Guide for<br>POS ERP Application</h1>
+      <p class="id">Panduan lengkap untuk mengoperasikan aplikasi Point of Sales berbasis Firebase. Mencakup setup, penggunaan harian, manajemen toko, hingga deploy ke Vercel.</p>
+      <p class="en">Complete guide to operating the Firebase-based Point of Sales application. Covers setup, daily operations, store management, and deployment to Vercel.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><div class="hm-dot"></div><span class="id">Versi 1.0</span><span class="en">Version 1.0</span></div>
+        <div class="hero-meta-item"><div class="hm-dot"></div><span class="id">Firebase + Firestore</span></div>
+        <div class="hero-meta-item"><div class="hm-dot"></div><span class="id">Siap Deploy ke Vercel/GitHub</span><span class="en">Ready to Deploy on Vercel/GitHub</span></div>
+      </div>
+    </div>
+
+    <!-- ─── 1. INTRODUCTION ─────────────────────────────── -->
+    <section class="section" id="sec-intro">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div>
+          <div class="section-title id">Pendahuluan</div>
+          <div class="section-title en">Introduction</div>
+          <div class="section-subtitle id">Apa itu POS ERP dan apa saja fiturnya?</div>
+          <div class="section-subtitle en">What is POS ERP and what are its features?</div>
+        </div>
+      </div>
+
+      <p class="id" style="margin-bottom:16px">POS ERP adalah aplikasi <strong>Point of Sales berbasis web</strong> yang berjalan sepenuhnya di browser. Data disimpan secara real-time di <strong>Firebase Firestore</strong> milik Anda sendiri sehingga data toko 100% berada di bawah kendali Anda.</p>
+      <p class="en" style="margin-bottom:16px">POS ERP is a <strong>web-based Point of Sales application</strong> running entirely in the browser. Data is stored in real-time on <strong>your own Firebase Firestore</strong>, so your store data is 100% under your control.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="fc-icon">🔐</span>
+          <div class="fc-title id">Autentikasi Firebase</div>
+          <div class="fc-title en">Firebase Authentication</div>
+          <div class="fc-desc id">Login aman dengan email & password. Setiap toko punya database Firebase sendiri.</div>
+          <div class="fc-desc en">Secure login with email & password. Each store has its own Firebase database.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">🛒</span>
+          <div class="fc-title id">Kasir (POS)</div>
+          <div class="fc-title en">Cashier (POS)</div>
+          <div class="fc-desc id">Transaksi penjualan cepat dengan keranjang, diskon, dan 4 metode pembayaran.</div>
+          <div class="fc-desc en">Fast sales transactions with cart, discounts, and 4 payment methods.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">📦</span>
+          <div class="fc-title id">Manajemen Produk</div>
+          <div class="fc-title en">Product Management</div>
+          <div class="fc-desc id">Tambah, edit, hapus produk. Stok otomatis berkurang setiap transaksi.</div>
+          <div class="fc-desc en">Add, edit, delete products. Stock auto-decrements on every transaction.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">👥</span>
+          <div class="fc-title id">Data Customer</div>
+          <div class="fc-title en">Customer Data</div>
+          <div class="fc-desc id">Simpan data pelanggan dan tracking total belanja per customer.</div>
+          <div class="fc-desc en">Store customer info and track total spending per customer.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">📈</span>
+          <div class="fc-title id">Laporan Penjualan</div>
+          <div class="fc-title en">Sales Reports</div>
+          <div class="fc-desc id">Grafik 7 hari, laporan per rentang tanggal, total pendapatan dan transaksi.</div>
+          <div class="fc-desc en">7-day chart, date-range reports, total revenue and transaction counts.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">🧾</span>
+          <div class="fc-title id">Struk Digital & Cetak</div>
+          <div class="fc-title en">Digital & Print Receipt</div>
+          <div class="fc-desc id">Struk otomatis setiap transaksi. Bisa dicetak langsung dari browser.</div>
+          <div class="fc-desc en">Auto receipt for every transaction. Printable directly from the browser.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">👤</span>
+          <div class="fc-title id">Multi-User & Role</div>
+          <div class="fc-title en">Multi-User & Roles</div>
+          <div class="fc-desc id">Buat akun kasir, manager, atau admin dari dalam aplikasi.</div>
+          <div class="fc-desc en">Create cashier, manager, or admin accounts from within the app.</div>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">🌐</span>
+          <div class="fc-title id">Bilingual ID / EN</div>
+          <div class="fc-title en">Bilingual ID / EN</div>
+          <div class="fc-desc id">Antarmuka & panduan tersedia dalam Bahasa Indonesia dan Inggris.</div>
+          <div class="fc-desc en">Interface & guide available in Indonesian and English.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 2. SETUP ─────────────────────────────────────── -->
+    <section class="section" id="sec-setup">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div>
+          <div class="section-title id">Setup Awal (Pertama Kali)</div>
+          <div class="section-title en">Initial Setup (First Time)</div>
+          <div class="section-subtitle id">Konfigurasi Firebase dan pembuatan database toko</div>
+          <div class="section-subtitle en">Firebase configuration and store database creation</div>
+        </div>
+      </div>
+
+      <div class="info-box info-note">
+        <span class="ib-icon">ℹ️</span>
+        <div class="ib-content">
+          <strong class="id">Setup hanya dilakukan sekali</strong>
+          <strong class="en">Setup is done only once</strong>
+          <span class="id">Setelah setup selesai, konfigurasi tersimpan di browser. Buka ulang aplikasi langsung ke halaman login.</span>
+          <span class="en">After setup is complete, the config is saved in the browser. Reopening the app goes directly to the login page.</span>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Buka Aplikasi & Isi Konfigurasi Firebase</div>
+            <div class="step-title en">Open App & Fill Firebase Configuration</div>
+            <div class="step-desc id">Saat pertama buka aplikasi, Anda akan melihat form <strong>Konfigurasi Firebase</strong>. Isi 6 field: API Key, Auth Domain, Project ID, Storage Bucket, Messaging Sender ID, dan App ID. Semua nilai ini didapat dari <a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary)">Firebase Console</a>.</div>
+            <div class="step-desc en">When first opening the app, you'll see the <strong>Firebase Configuration</strong> form. Fill in 6 fields: API Key, Auth Domain, Project ID, Storage Bucket, Messaging Sender ID, and App ID. All values come from the <a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary)">Firebase Console</a>.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Isi Informasi Toko</div>
+            <div class="step-title en">Fill Store Information</div>
+            <div class="step-desc id">Masukkan <strong>nama toko/bisnis</strong>, nama cabang/outlet, mata uang (Rupiah, Dollar, dll), dan catatan yang akan muncul di bagian bawah struk.</div>
+            <div class="step-desc en">Enter your <strong>store/business name</strong>, branch/outlet name, currency (Rupiah, Dollar, etc.), and a note that will appear at the bottom of receipts.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title id">Buat Akun Admin Pertama</div>
+            <div class="step-title en">Create First Admin Account</div>
+            <div class="step-desc id">Masukkan nama lengkap, email, dan password (min. 6 karakter). Akun ini akan menjadi <strong>Superadmin</strong> dengan akses penuh ke semua fitur termasuk manajemen user.</div>
+            <div class="step-desc en">Enter full name, email, and password (min. 6 characters). This account becomes the <strong>Superadmin</strong> with full access to all features including user management.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title id">Klik "Buat Database & Mulai"</div>
+            <div class="step-title en">Click "Create Database & Start"</div>
+            <div class="step-desc id">Aplikasi akan membuat akun di Firebase Auth, menyimpan konfigurasi toko di Firestore, dan langsung login otomatis. Proses berlangsung beberapa detik.</div>
+            <div class="step-desc en">The app creates the account in Firebase Auth, saves the store config in Firestore, and logs in automatically. The process takes a few seconds.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box info-warn" style="margin-top:16px">
+        <span class="ib-icon">⚠️</span>
+        <div class="ib-content">
+          <strong class="id">Sebelum setup, pastikan di Firebase Console:</strong>
+          <strong class="en">Before setup, ensure in Firebase Console:</strong>
+          <span class="id">1) <strong>Authentication → Sign-in method → Email/Password → Aktifkan</strong>&nbsp;&nbsp;2) <strong>Firestore Database → Buat database → Mode Production → Atur rules</strong></span>
+          <span class="en">1) <strong>Authentication → Sign-in method → Email/Password → Enable</strong>&nbsp;&nbsp;2) <strong>Firestore Database → Create database → Production Mode → Set rules</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 3. LOGIN ──────────────────────────────────────── -->
+    <section class="section" id="sec-login">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div>
+          <div class="section-title id">Login ke Aplikasi</div>
+          <div class="section-title en">Logging In</div>
+          <div class="section-subtitle id">Masuk ke sistem dengan akun yang sudah terdaftar</div>
+          <div class="section-subtitle en">Sign in with a registered account</div>
+        </div>
+      </div>
+
+      <div class="screen-mock">
+        <div class="mock-bar">
+          <div class="mb-dots"><div class="mb-dot"></div><div class="mb-dot"></div><div class="mb-dot"></div></div>
+          <div class="mb-title id">Halaman Login — POS ERP</div>
+          <div class="mb-title en">Login Page — POS ERP</div>
+        </div>
+        <div class="mock-body">
+          <div style="max-width:320px;margin:0 auto;background:white;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.08)">
+            <div style="font-size:18px;font-weight:800;margin-bottom:4px" class="id">Masuk ke Toko Anda</div>
+            <div style="font-size:18px;font-weight:800;margin-bottom:4px" class="en">Sign In to Your Store</div>
+            <div style="font-size:12px;color:#718096;margin-bottom:20px">Point of Sales Management</div>
+            <div style="background:#F5F6FA;border:1.5px solid #E0E7EF;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:#A0AEC0" class="id">Email akun Anda...</div>
+            <div style="background:#F5F6FA;border:1.5px solid #E0E7EF;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:#A0AEC0" class="id">Password...</div>
+            <div style="background:#F5F6FA;border:1.5px solid #E0E7EF;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:#A0AEC0" class="en">Your email address...</div>
+            <div style="background:#F5F6FA;border:1.5px solid #E0E7EF;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px;color:#A0AEC0" class="en">Password...</div>
+            <div style="background:#2196F3;color:white;border-radius:8px;padding:11px;text-align:center;font-size:13px;font-weight:700" class="id">Masuk</div>
+            <div style="background:#2196F3;color:white;border-radius:8px;padding:11px;text-align:center;font-size:13px;font-weight:700" class="en">Sign In</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Masukkan Email & Password</div>
+            <div class="step-title en">Enter Email & Password</div>
+            <div class="step-desc id">Gunakan email dan password yang didaftarkan saat setup atau yang ditambahkan oleh admin. Tekan <kbd>Enter</kbd> atau klik tombol Masuk.</div>
+            <div class="step-desc en">Use the email and password registered during setup or added by an admin. Press <kbd>Enter</kbd> or click Sign In.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Akses Berdasarkan Role</div>
+            <div class="step-title en">Access Based on Role</div>
+            <div class="step-desc id">Setelah login, menu yang tampil menyesuaikan role akun. Superadmin/Admin mendapat menu <strong>Settings</strong> tambahan untuk manajemen user.</div>
+            <div class="step-desc en">After login, the visible menu adapts to your account role. Superadmin/Admin get an extra <strong>Settings</strong> menu for user management.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box info-tip" style="margin-top:12px">
+        <span class="ib-icon">💡</span>
+        <div class="ib-content">
+          <strong class="id">Ganti Konfigurasi Firebase</strong>
+          <strong class="en">Change Firebase Configuration</strong>
+          <span class="id">Jika perlu berpindah ke Firebase project lain, klik tautan <strong>"Ganti Konfigurasi Firebase"</strong> di bawah tombol login.</span>
+          <span class="en">To switch to a different Firebase project, click the <strong>"Change Firebase Configuration"</strong> link below the login button.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 4. DASHBOARD ─────────────────────────────────── -->
+    <section class="section" id="sec-dashboard">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div>
+          <div class="section-title">Dashboard</div>
+          <div class="section-subtitle id">Ringkasan performa toko secara real-time</div>
+          <div class="section-subtitle en">Real-time store performance summary</div>
+        </div>
+      </div>
+
+      <p class="id" style="margin-bottom:16px">Dashboard adalah halaman pertama yang muncul setelah login. Berisi ringkasan statistik toko hari ini dan periode berjalan.</p>
+      <p class="en" style="margin-bottom:16px">The dashboard is the first page shown after login. It contains a summary of today's and current period's store statistics.</p>
+
+      <table class="guide-table">
+        <thead>
+          <tr>
+            <th class="id">Widget</th>
+            <th class="en">Widget</th>
+            <th class="id">Keterangan</th>
+            <th class="en">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong class="id">Penjualan Hari Ini</strong><strong class="en">Today's Sales</strong></td>
+            <td class="id">Total nilai transaksi pada hari berjalan beserta jumlah transaksi.</td>
+            <td class="en">Total transaction value for the current day and transaction count.</td>
+          </tr>
+          <tr>
+            <td><strong class="id">Total Produk</strong><strong class="en">Total Products</strong></td>
+            <td class="id">Jumlah produk yang terdaftar di katalog.</td>
+            <td class="en">Number of products registered in the catalog.</td>
+          </tr>
+          <tr>
+            <td><strong class="id">Total Customer</strong><strong class="en">Total Customers</strong></td>
+            <td class="id">Jumlah customer yang terdaftar di database.</td>
+            <td class="en">Number of customers registered in the database.</td>
+          </tr>
+          <tr>
+            <td><strong class="id">Transaksi Bulan Ini</strong><strong class="en">This Month's Transactions</strong></td>
+            <td class="id">Jumlah transaksi dan total pendapatan bulan berjalan.</td>
+            <td class="en">Transaction count and total revenue for the current month.</td>
+          </tr>
+          <tr>
+            <td><strong class="id">Grafik 7 Hari</strong><strong class="en">7-Day Chart</strong></td>
+            <td class="id">Grafik garis penjualan 7 hari terakhir secara visual.</td>
+            <td class="en">Line chart showing sales for the past 7 days.</td>
+          </tr>
+          <tr>
+            <td><strong class="id">Transaksi Terbaru</strong><strong class="en">Recent Transactions</strong></td>
+            <td class="id">Tabel 8 transaksi terakhir: nomor faktur, customer, total, metode bayar.</td>
+            <td class="en">Table of last 8 transactions: invoice number, customer, total, payment method.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── 5. POS ─────────────────────────────────────────── -->
+    <section class="section" id="sec-pos">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div>
+          <div class="section-title id">Point of Sales — Kasir</div>
+          <div class="section-title en">Point of Sales — Cashier</div>
+          <div class="section-subtitle id">Cara melakukan transaksi penjualan</div>
+          <div class="section-subtitle en">How to process a sales transaction</div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Cari / Pilih Produk</div>
+            <div class="step-title en">Search / Select Product</div>
+            <div class="step-desc id">Gunakan kolom pencarian atau klik chip kategori untuk memfilter produk. Klik kartu produk untuk menambahkan ke keranjang. Stok produk habis tidak akan muncul.</div>
+            <div class="step-desc en">Use the search bar or click category chips to filter products. Click a product card to add it to the cart. Out-of-stock products won't appear.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Atur Keranjang</div>
+            <div class="step-title en">Adjust Cart</div>
+            <div class="step-desc id">Di panel kanan, gunakan tombol <strong>+</strong> dan <strong>−</strong> untuk mengubah jumlah item. Klik tombol <strong>×</strong> untuk menghapus item. Klik "Kosongkan" untuk mengosongkan seluruh keranjang.</div>
+            <div class="step-desc en">In the right panel, use <strong>+</strong> and <strong>−</strong> buttons to change quantity. Click <strong>×</strong> to remove an item. Click "Clear" to empty the entire cart.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title id">Isi Diskon & Pilih Customer (Opsional)</div>
+            <div class="step-title en">Set Discount & Select Customer (Optional)</div>
+            <div class="step-desc id">Masukkan persentase diskon (0–100%) di kolom <strong>Diskon (%)</strong>. Pilih nama customer dari dropdown jika transaksi ingin dikaitkan ke customer tertentu.</div>
+            <div class="step-desc en">Enter a discount percentage (0–100%) in the <strong>Discount (%)</strong> field. Select a customer name from the dropdown to link the transaction to a specific customer.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title id">Klik "Bayar Sekarang"</div>
+            <div class="step-title en">Click "Pay Now"</div>
+            <div class="step-desc id">Modal pembayaran akan terbuka menampilkan total yang harus dibayar.</div>
+            <div class="step-desc en">The payment modal opens showing the total amount due.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-title id">Pilih Metode Pembayaran</div>
+            <div class="step-title en">Select Payment Method</div>
+            <div class="step-desc id">Tersedia 4 metode: <strong>Tunai</strong>, <strong>Transfer Bank</strong>, <strong>QRIS</strong>, dan <strong>Kartu Debit/Kredit</strong>. Untuk Tunai, masukkan uang yang diterima — kembalian dihitung otomatis.</div>
+            <div class="step-desc en">4 methods available: <strong>Cash</strong>, <strong>Bank Transfer</strong>, <strong>QRIS</strong>, and <strong>Debit/Credit Card</strong>. For Cash, enter the amount received — change is auto-calculated.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <div class="step-title id">Konfirmasi & Cetak Struk</div>
+            <div class="step-title en">Confirm & Print Receipt</div>
+            <div class="step-desc id">Klik <strong>"Konfirmasi Bayar"</strong>. Stok produk otomatis dikurangi, transaksi tersimpan di Firestore, dan struk digital tampil. Klik "Cetak Struk" untuk mencetak via printer.</div>
+            <div class="step-desc en">Click <strong>"Confirm Payment"</strong>. Product stock auto-decrements, the transaction is saved to Firestore, and a digital receipt appears. Click "Print Receipt" to print via printer.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box info-warn">
+        <span class="ib-icon">⚠️</span>
+        <div class="ib-content">
+          <strong class="id">Catatan Stok</strong>
+          <strong class="en">Stock Note</strong>
+          <span class="id">Stok yang ditampilkan di POS adalah stok saat halaman dimuat. Jika ada transaksi paralel, refresh halaman untuk stok terkini.</span>
+          <span class="en">Stock shown in POS is as of page load. If parallel transactions occur, refresh the page for updated stock.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 6. PRODUCT ────────────────────────────────────── -->
+    <section class="section" id="sec-product">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div>
+          <div class="section-title id">Manajemen Produk</div>
+          <div class="section-title en">Product Management</div>
+          <div class="section-subtitle id">Kelola katalog produk toko Anda</div>
+          <div class="section-subtitle en">Manage your store product catalog</div>
+        </div>
+      </div>
+
+      <p class="id" style="margin-bottom:16px">Halaman Produk menampilkan seluruh produk dalam tabel. Tersedia fitur pencarian, tambah, edit, dan hapus produk.</p>
+      <p class="en" style="margin-bottom:16px">The Products page displays all products in a table. Features include search, add, edit, and delete.</p>
+
+      <table class="guide-table">
+        <thead>
+          <tr>
+            <th class="id">Field</th>
+            <th class="en">Field</th>
+            <th class="id">Keterangan</th>
+            <th class="en">Description</th>
+            <th class="id">Wajib?</th>
+            <th class="en">Required?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong class="id">Nama Produk</strong><strong class="en">Product Name</strong></td>
+            <td class="id">Nama produk yang tampil di POS dan struk</td>
+            <td class="en">Product name shown in POS and receipt</td>
+            <td><span class="badge badge-red">✓</span></td>
+          </tr>
+          <tr>
+            <td><strong class="id">Kategori</strong><strong class="en">Category</strong></td>
+            <td class="id">Digunakan untuk filter chip di halaman POS</td>
+            <td class="en">Used for filter chips on the POS page</td>
+            <td><span class="badge badge-green id">Opsional</span><span class="badge badge-green en">Optional</span></td>
+          </tr>
+          <tr>
+            <td><strong class="id">Emoji / Ikon</strong><strong class="en">Emoji / Icon</strong></td>
+            <td class="id">Ikon visual produk di grid POS (contoh: 🛍, 👗, 🍕)</td>
+            <td class="en">Visual icon in POS product grid (e.g. 🛍, 👗, 🍕)</td>
+            <td><span class="badge badge-green id">Opsional</span><span class="badge badge-green en">Optional</span></td>
+          </tr>
+          <tr>
+            <td><strong class="id">Harga Jual</strong><strong class="en">Selling Price</strong></td>
+            <td class="id">Harga yang dikenakan ke customer</td>
+            <td class="en">Price charged to the customer</td>
+            <td><span class="badge badge-red">✓</span></td>
+          </tr>
+          <tr>
+            <td><strong class="id">Harga Modal</strong><strong class="en">Cost Price</strong></td>
+            <td class="id">Harga beli/modal produk (untuk kalkulasi profit)</td>
+            <td class="en">Purchase/cost price (for profit calculation)</td>
+            <td><span class="badge badge-green id">Opsional</span><span class="badge badge-green en">Optional</span></td>
+          </tr>
+          <tr>
+            <td><strong class="id">Stok</strong><strong class="en">Stock</strong></td>
+            <td class="id">Jumlah stok tersedia; berkurang otomatis saat transaksi</td>
+            <td class="en">Available stock; auto-decrements on transaction</td>
+            <td><span class="badge badge-red">✓</span></td>
+          </tr>
+          <tr>
+            <td><strong class="id">Satuan</strong><strong class="en">Unit</strong></td>
+            <td class="id">Satuan produk: pcs, kg, liter, lusin, dll</td>
+            <td class="en">Product unit: pcs, kg, liter, dozen, etc.</td>
+            <td><span class="badge badge-green id">Opsional</span><span class="badge badge-green en">Optional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box info-tip">
+        <span class="ib-icon">💡</span>
+        <div class="ib-content">
+          <strong class="id">Tips Kategori</strong>
+          <strong class="en">Category Tip</strong>
+          <span class="id">Gunakan nama kategori yang konsisten (huruf kapital sama) agar chip filter di POS terbentuk dengan benar. Contoh: selalu tulis "Makanan" bukan kadang "makanan".</span>
+          <span class="en">Use consistent category names (same capitalization) so filter chips on POS render correctly. Example: always write "Food" not sometimes "food".</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 7. CUSTOMER ───────────────────────────────────── -->
+    <section class="section" id="sec-customer">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div>
+          <div class="section-title id">Data Customer</div>
+          <div class="section-title en">Customer Data</div>
+          <div class="section-subtitle id">Kelola database pelanggan toko</div>
+          <div class="section-subtitle en">Manage your store's customer database</div>
+        </div>
+      </div>
+
+      <p class="id" style="margin-bottom:16px">Tambahkan customer agar bisa dipilih saat transaksi di POS. Sistem akan mencatat total belanja setiap customer secara otomatis.</p>
+      <p class="en" style="margin-bottom:16px">Add customers to select them during POS transactions. The system automatically tracks each customer's total spending.</p>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Tambah Customer Baru</div>
+            <div class="step-title en">Add New Customer</div>
+            <div class="step-desc id">Klik tombol <strong>"+ Tambah Customer"</strong> → isi nama (wajib), email, telepon, dan alamat → klik Simpan.</div>
+            <div class="step-desc en">Click <strong>"+ Add Customer"</strong> → fill name (required), email, phone, and address → click Save.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Gunakan Customer di POS</div>
+            <div class="step-title en">Use Customer in POS</div>
+            <div class="step-desc id">Saat transaksi, pilih nama customer dari dropdown di panel keranjang sebelum menekan "Bayar Sekarang". Total belanja customer akan terupdate otomatis.</div>
+            <div class="step-desc en">During a transaction, select the customer name from the cart panel dropdown before clicking "Pay Now". Customer's total spending auto-updates.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 8. REPORTS ────────────────────────────────────── -->
+    <section class="section" id="sec-report">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div>
+          <div class="section-title id">Laporan Penjualan</div>
+          <div class="section-title en">Sales Reports</div>
+          <div class="section-subtitle id">Analisis data penjualan berdasarkan periode</div>
+          <div class="section-subtitle en">Analyze sales data by time period</div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Tentukan Rentang Tanggal</div>
+            <div class="step-title en">Set Date Range</div>
+            <div class="step-desc id">Gunakan dua input tanggal di kanan atas halaman Reports untuk menentukan periode laporan. Default otomatis ke bulan berjalan.</div>
+            <div class="step-desc en">Use the two date inputs at the top right of the Reports page to define the report period. Defaults to the current month.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Baca Ringkasan Statistik</div>
+            <div class="step-title en">Read Summary Statistics</div>
+            <div class="step-desc id">Empat kartu di atas menampilkan: Total Pendapatan, Jumlah Transaksi, Total Item Terjual, dan Rata-rata nilai per Transaksi untuk periode yang dipilih.</div>
+            <div class="step-desc en">Four cards at the top show: Total Revenue, Transaction Count, Total Items Sold, and Average Transaction Value for the selected period.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title id">Lihat Riwayat Transaksi</div>
+            <div class="step-title en">View Transaction History</div>
+            <div class="step-desc id">Tabel di bawah menampilkan semua transaksi dalam periode: nomor faktur, tanggal & jam, nama customer, jumlah item, metode pembayaran, dan total.</div>
+            <div class="step-desc en">The table below shows all transactions in the period: invoice number, date & time, customer name, item count, payment method, and total.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 9. SETTINGS ───────────────────────────────────── -->
+    <section class="section" id="sec-settings">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div>
+          <div class="section-title id">Pengaturan & Manajemen User</div>
+          <div class="section-title en">Settings & User Management</div>
+          <div class="section-subtitle id">Hanya tersedia untuk Admin dan Superadmin</div>
+          <div class="section-subtitle en">Available for Admin and Superadmin only</div>
+        </div>
+      </div>
+
+      <div class="info-box info-note">
+        <span class="ib-icon">🔒</span>
+        <div class="ib-content">
+          <strong class="id">Akses Terbatas</strong>
+          <strong class="en">Restricted Access</strong>
+          <span class="id">Menu Settings hanya muncul di navbar untuk akun dengan role <strong>Admin</strong> atau <strong>Superadmin</strong>.</span>
+          <span class="en">The Settings menu only appears in the navbar for accounts with <strong>Admin</strong> or <strong>Superadmin</strong> roles.</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+          <div style="font-size:15px;font-weight:700;margin-bottom:12px">🏪 <span class="id">Info Toko</span><span class="en">Store Info</span></div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--accent-green);font-weight:700">✓</span><span class="id">Ubah nama toko & cabang</span><span class="en">Change store name & branch</span></li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--accent-green);font-weight:700">✓</span><span class="id">Ganti mata uang</span><span class="en">Change currency</span></li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--accent-green);font-weight:700">✓</span><span class="id">Edit catatan di struk</span><span class="en">Edit receipt note</span></li>
+          </ul>
+        </div>
+        <div style="background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+          <div style="font-size:15px;font-weight:700;margin-bottom:12px">👥 <span class="id">Manajemen User</span><span class="en">User Management</span></div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--accent-green);font-weight:700">✓</span><span class="id">Lihat semua user terdaftar</span><span class="en">View all registered users</span></li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--accent-green);font-weight:700">✓</span><span class="id">Tambah user baru (kasir, manager, admin)</span><span class="en">Add new user (cashier, manager, admin)</span></li>
+            <li style="font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--accent-green);font-weight:700">✓</span><span class="id">Hapus user dari database</span><span class="en">Delete user from database</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box info-warn" style="margin-top:16px">
+        <span class="ib-icon">⚠️</span>
+        <div class="ib-content">
+          <strong class="id">Catatan Hapus User</strong>
+          <strong class="en">Delete User Note</strong>
+          <span class="id">Menghapus user hanya menghapus data dari Firestore. Akun Firebase Auth tetap aktif. Untuk menonaktifkan login, hapus akun juga dari Firebase Console → Authentication.</span>
+          <span class="en">Deleting a user only removes their data from Firestore. The Firebase Auth account remains active. To disable login, also delete the account from Firebase Console → Authentication.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 10. ROLES ─────────────────────────────────────── -->
+    <section class="section" id="sec-roles">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div>
+          <div class="section-title id">Hak Akses (Role)</div>
+          <div class="section-title en">Access Roles</div>
+          <div class="section-subtitle id">Perbedaan akses tiap level pengguna</div>
+          <div class="section-subtitle en">Access differences per user level</div>
+        </div>
+      </div>
+
+      <div class="role-grid" style="margin-bottom:20px">
+        <div class="role-card">
+          <span class="rc-icon">👑</span>
+          <div class="rc-name">Superadmin</div>
+          <div class="rc-desc id">Akses penuh. Dibuat saat setup pertama. Tidak bisa dihapus oleh user lain.</div>
+          <div class="rc-desc en">Full access. Created at first setup. Cannot be deleted by other users.</div>
+        </div>
+        <div class="role-card">
+          <span class="rc-icon">🛡️</span>
+          <div class="rc-name">Admin</div>
+          <div class="rc-desc id">Akses ke semua halaman termasuk Settings & manajemen user.</div>
+          <div class="rc-desc en">Access to all pages including Settings & user management.</div>
+        </div>
+        <div class="role-card">
+          <span class="rc-icon">📊</span>
+          <div class="rc-name">Manager</div>
+          <div class="rc-desc id">Akses POS, Produk, Customer, dan Reports. Tidak ada Settings.</div>
+          <div class="rc-desc en">Access to POS, Products, Customers, and Reports. No Settings.</div>
+        </div>
+        <div class="role-card">
+          <span class="rc-icon">💼</span>
+          <div class="rc-name">Kasir</div>
+          <div class="rc-desc id">Akses POS, Produk, Customer, dan Reports. Tidak ada Settings.</div>
+          <div class="rc-desc en">Access to POS, Products, Customers, and Reports. No Settings.</div>
+        </div>
+      </div>
+
+      <table class="guide-table">
+        <thead>
+          <tr>
+            <th class="id">Fitur</th>
+            <th class="en">Feature</th>
+            <th>Kasir</th>
+            <th>Manager</th>
+            <th>Admin</th>
+            <th>Superadmin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="id">Dashboard</td><td class="en">Dashboard</td>
+            <td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td class="id">POS / Kasir</td><td class="en">POS / Cashier</td>
+            <td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td class="id">Produk (CRUD)</td><td class="en">Products (CRUD)</td>
+            <td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td class="id">Customer (CRUD)</td><td class="en">Customers (CRUD)</td>
+            <td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td class="id">Laporan</td><td class="en">Reports</td>
+            <td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td class="id">Settings Toko</td><td class="en">Store Settings</td>
+            <td>❌</td><td>❌</td><td>✅</td><td>✅</td>
+          </tr>
+          <tr>
+            <td class="id">Manajemen User</td><td class="en">User Management</td>
+            <td>❌</td><td>❌</td><td>✅</td><td>✅</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── 11. FAQ ────────────────────────────────────────── -->
+    <section class="section" id="sec-faq">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <div>
+          <div class="section-title">FAQ</div>
+          <div class="section-subtitle id">Pertanyaan yang sering ditanyakan</div>
+          <div class="section-subtitle en">Frequently asked questions</div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">?</div>
+          <div class="step-content">
+            <div class="step-title id">Apakah data saya aman?</div>
+            <div class="step-title en">Is my data safe?</div>
+            <div class="step-desc id">Ya. Data disimpan di Firebase Firestore milik Anda sendiri. Anthropic atau pihak ketiga tidak memiliki akses ke database Anda.</div>
+            <div class="step-desc en">Yes. Data is stored in your own Firebase Firestore. Anthropic or any third party has no access to your database.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">?</div>
+          <div class="step-content">
+            <div class="step-title id">Bisakah digunakan di beberapa perangkat?</div>
+            <div class="step-title en">Can it be used on multiple devices?</div>
+            <div class="step-desc id">Ya. Karena berbasis web dan Firebase, Anda bisa login dari PC, tablet, atau HP selama ada browser dan koneksi internet.</div>
+            <div class="step-desc en">Yes. Since it's web-based and Firebase-powered, you can log in from PC, tablet, or phone as long as you have a browser and internet connection.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">?</div>
+          <div class="step-content">
+            <div class="step-title id">Bagaimana jika saya lupa password?</div>
+            <div class="step-title en">What if I forget my password?</div>
+            <div class="step-desc id">Reset password melalui <strong>Firebase Console → Authentication → Users → Reset password</strong> untuk mengirim email reset ke pengguna.</div>
+            <div class="step-desc en">Reset the password via <strong>Firebase Console → Authentication → Users → Reset password</strong> to send a reset email to the user.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">?</div>
+          <div class="step-content">
+            <div class="step-title id">Bisakah aplikasi digunakan offline?</div>
+            <div class="step-title en">Can the app be used offline?</div>
+            <div class="step-desc id">Saat ini belum. Koneksi internet diperlukan untuk sinkronisasi data dengan Firebase Firestore secara real-time.</div>
+            <div class="step-desc en">Not yet. An internet connection is required for real-time data sync with Firebase Firestore.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">?</div>
+          <div class="step-content">
+            <div class="step-title id">Bagaimana cara backup data?</div>
+            <div class="step-title en">How to back up data?</div>
+            <div class="step-desc id">Gunakan fitur export di <strong>Firebase Console → Firestore → Import/Export</strong>. Data dapat diekspor ke Cloud Storage secara berkala.</div>
+            <div class="step-desc en">Use the export feature at <strong>Firebase Console → Firestore → Import/Export</strong>. Data can be exported to Cloud Storage periodically.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">?</div>
+          <div class="step-content">
+            <div class="step-title id">Apakah ada biaya untuk Firebase?</div>
+            <div class="step-title en">Is there a cost for Firebase?</div>
+            <div class="step-desc id">Firebase menawarkan <strong>Spark Plan (gratis)</strong> yang cukup untuk toko kecil-menengah: 20K read/hari, 20K write/hari. Upgrade ke Blaze Plan jika volume transaksi sangat tinggi.</div>
+            <div class="step-desc en">Firebase offers a free <strong>Spark Plan</strong> sufficient for small-medium stores: 20K reads/day, 20K writes/day. Upgrade to Blaze Plan for very high transaction volumes.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 12. FIREBASE GUIDE ───────────────────────────── -->
+    <section class="section" id="sec-firebase">
+      <div class="section-header">
+        <div class="section-num">12</div>
+        <div>
+          <div class="section-title id">Panduan Setup Firebase</div>
+          <div class="section-title en">Firebase Setup Guide</div>
+          <div class="section-subtitle id">Cara mendapatkan konfigurasi Firebase untuk aplikasi ini</div>
+          <div class="section-subtitle en">How to get Firebase configuration for this app</div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Buat Project Firebase</div>
+            <div class="step-title en">Create Firebase Project</div>
+            <div class="step-desc id">Buka <a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary)">console.firebase.google.com</a> → klik <strong>"Add Project"</strong> → ikuti wizard → aktifkan/nonaktifkan Google Analytics sesuai kebutuhan.</div>
+            <div class="step-desc en">Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary)">console.firebase.google.com</a> → click <strong>"Add Project"</strong> → follow the wizard → enable/disable Google Analytics as needed.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Aktifkan Authentication Email/Password</div>
+            <div class="step-title en">Enable Email/Password Authentication</div>
+            <div class="step-desc id">Di sidebar Firebase → <strong>Authentication → Get started → Sign-in method → Email/Password → Enable → Save</strong>.</div>
+            <div class="step-desc en">In Firebase sidebar → <strong>Authentication → Get started → Sign-in method → Email/Password → Enable → Save</strong>.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title id">Buat Firestore Database</div>
+            <div class="step-title en">Create Firestore Database</div>
+            <div class="step-desc id">Di sidebar → <strong>Firestore Database → Create database → Start in production mode → Pilih lokasi server → Create</strong>. Pilih <em>asia-southeast1</em> (Singapura) untuk Indonesia.</div>
+            <div class="step-desc en">In sidebar → <strong>Firestore Database → Create database → Start in production mode → Choose server location → Create</strong>. Choose <em>asia-southeast1</em> (Singapore) for Southeast Asia.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title id">Atur Firestore Rules</div>
+            <div class="step-title en">Set Firestore Rules</div>
+            <div class="step-desc id">Di Firestore → tab <strong>Rules</strong> → ganti isi dengan rules berikut lalu klik <strong>Publish</strong>:</div>
+            <div class="step-desc en">In Firestore → <strong>Rules</strong> tab → replace content with the following rules, then click <strong>Publish</strong>:</div>
+            <div class="code-block">
+<span class="cm">// Firestore Security Rules — POS ERP</span>
+rules_version = <span class="cs">'2'</span>;
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: <span class="ck">if</span> request.auth != <span class="cs">null</span>;
+    }
+  }
+}
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-title id">Daftarkan Web App & Ambil Config</div>
+            <div class="step-title en">Register Web App & Get Config</div>
+            <div class="step-desc id">Di sidebar → <strong>Project Settings (⚙) → Your Apps → Web (&lt;/&gt;) → Register App</strong> → beri nama app → klik Register. Setelah itu salin nilai <code>firebaseConfig</code> yang tampil.</div>
+            <div class="step-desc en">In sidebar → <strong>Project Settings (⚙) → Your Apps → Web (&lt;/&gt;) → Register App</strong> → give the app a name → click Register. Then copy the displayed <code>firebaseConfig</code> values.</div>
+            <div class="code-block">
+<span class="cm">// Contoh firebaseConfig yang perlu disalin</span>
+<span class="cm">// Example firebaseConfig to copy</span>
+const firebaseConfig = {
+  apiKey: <span class="cs">"AIzaSy..."</span>,
+  authDomain: <span class="cs">"my-project.firebaseapp.com"</span>,
+  projectId: <span class="cs">"my-project-id"</span>,
+  storageBucket: <span class="cs">"my-project.appspot.com"</span>,
+  messagingSenderId: <span class="cs">"123456789"</span>,
+  appId: <span class="cs">"1:123456789:web:abc123"</span>
+};
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 13. DEPLOY ────────────────────────────────────── -->
+    <section class="section" id="sec-deploy">
+      <div class="section-header">
+        <div class="section-num">13</div>
+        <div>
+          <div class="section-title id">Deploy ke Vercel via GitHub</div>
+          <div class="section-title en">Deploy to Vercel via GitHub</div>
+          <div class="section-subtitle id">Cara meng-hosting aplikasi agar bisa diakses online</div>
+          <div class="section-subtitle en">How to host the app for online access</div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title id">Upload ke GitHub</div>
+            <div class="step-title en">Upload to GitHub</div>
+            <div class="step-desc id">Buka <a href="https://github.com" target="_blank" style="color:var(--primary)">github.com</a> → buat repository baru (bisa Public atau Private) → upload file <code>pos-app.html</code> ke repository. Anda bisa rename file menjadi <code>index.html</code>.</div>
+            <div class="step-desc en">Go to <a href="https://github.com" target="_blank" style="color:var(--primary)">github.com</a> → create a new repository (Public or Private) → upload <code>pos-app.html</code> to the repository. You may rename the file to <code>index.html</code>.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title id">Connect ke Vercel</div>
+            <div class="step-title en">Connect to Vercel</div>
+            <div class="step-desc id">Buka <a href="https://vercel.com" target="_blank" style="color:var(--primary)">vercel.com</a> → login/daftar → klik <strong>"New Project"</strong> → pilih <strong>"Import Git Repository"</strong> → pilih repo yang baru dibuat.</div>
+            <div class="step-desc en">Go to <a href="https://vercel.com" target="_blank" style="color:var(--primary)">vercel.com</a> → login/register → click <strong>"New Project"</strong> → select <strong>"Import Git Repository"</strong> → choose the newly created repo.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title id">Deploy</div>
+            <div class="step-title en">Deploy</div>
+            <div class="step-desc id">Di halaman konfigurasi Vercel, langsung klik <strong>"Deploy"</strong> tanpa perlu mengubah apapun. Vercel otomatis mendeteksi file HTML statis. Proses deploy berlangsung 30–60 detik.</div>
+            <div class="step-desc en">On the Vercel configuration page, just click <strong>"Deploy"</strong> without changing anything. Vercel auto-detects the static HTML file. Deployment takes 30–60 seconds.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title id">Akses URL Publik</div>
+            <div class="step-title en">Access Public URL</div>
+            <div class="step-desc id">Setelah deploy selesai, Vercel memberikan URL seperti <code>your-app.vercel.app</code>. Buka URL tersebut → lakukan setup Firebase pertama kali → selesai!</div>
+            <div class="step-desc en">After deployment, Vercel provides a URL like <code>your-app.vercel.app</code>. Open that URL → do the first-time Firebase setup → done!</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-title id">Auto-Deploy Selanjutnya</div>
+            <div class="step-title en">Future Auto-Deploys</div>
+            <div class="step-desc id">Setiap kali Anda push perubahan ke GitHub, Vercel otomatis re-deploy aplikasi. Tidak perlu langkah manual lagi.</div>
+            <div class="step-desc en">Every time you push changes to GitHub, Vercel automatically re-deploys the app. No manual steps needed.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box info-tip">
+        <span class="ib-icon">💡</span>
+        <div class="ib-content">
+          <strong class="id">Domain Kustom (Opsional)</strong>
+          <strong class="en">Custom Domain (Optional)</strong>
+          <span class="id">Di Vercel → Settings → Domains → tambahkan domain kustom Anda (contoh: <code>pos.tokobatik.com</code>) untuk tampilan lebih profesional.</span>
+          <span class="en">In Vercel → Settings → Domains → add your custom domain (e.g. <code>pos.mystore.com</code>) for a more professional appearance.</span>
+        </div>
+      </div>
+
+      <div class="info-box info-danger">
+        <span class="ib-icon">🚨</span>
+        <div class="ib-content">
+          <strong class="id">Tambahkan Domain Vercel ke Firebase Authorized Domains</strong>
+          <strong class="en">Add Vercel Domain to Firebase Authorized Domains</strong>
+          <span class="id">Di Firebase Console → Authentication → Settings → Authorized domains → klik <strong>Add domain</strong> → masukkan domain Vercel Anda (contoh: <code>your-app.vercel.app</code>). Tanpa ini, login akan gagal.</span>
+          <span class="en">In Firebase Console → Authentication → Settings → Authorized domains → click <strong>Add domain</strong> → enter your Vercel domain (e.g. <code>your-app.vercel.app</code>). Without this, login will fail.</span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <div class="footer">
+      <p class="id">Dibuat dengan ❤ menggunakan <strong>Firebase</strong> + <strong>Vercel</strong></p>
+      <p class="en">Made with ❤ using <strong>Firebase</strong> + <strong>Vercel</strong></p>
+      <p style="margin-top:8px" class="id">Panduan ini dibuat untuk aplikasi <strong>POS ERP v1.0</strong></p>
+      <p style="margin-top:8px" class="en">This guide was created for <strong>POS ERP v1.0</strong></p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ─── LANGUAGE TOGGLE ──────────────────────────────────────
+  function setLang(lang) {
+    document.body.className = 'lang-' + lang;
+    document.documentElement.lang = lang;
+    document.getElementById('btn-id').classList.toggle('active', lang === 'id');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    localStorage.setItem('pos-guide-lang', lang);
+    updateTitle(lang);
+  }
+
+  function updateTitle(lang) {
+    document.title = lang === 'en'
+      ? 'POS ERP — User Guide'
+      : 'POS ERP — Panduan Penggunaan';
+  }
+
+  // Restore saved language
+  const saved = localStorage.getItem('pos-guide-lang') || 'id';
+  setLang(saved);
+
+  // ─── SMOOTH SCROLL ────────────────────────────────────────
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ─── SCROLL SPY ───────────────────────────────────────────
+  const sections = document.querySelectorAll('.section');
+  const links = document.querySelectorAll('.sidebar-link');
+  const progressBar = document.getElementById('progress-bar');
+
+  function onScroll() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+    progressBar.style.transform = `scaleX(${progress})`;
+
+    let current = '';
+    sections.forEach(sec => {
+      const offset = sec.getBoundingClientRect().top;
+      if (offset <= 120) current = sec.id;
+    });
+
+    links.forEach(l => {
+      const href = l.getAttribute('href')?.replace('#', '');
+      l.classList.toggle('active', href === current);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+</body>
+</html>
