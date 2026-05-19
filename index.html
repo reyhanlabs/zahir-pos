@@ -5,13 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>POS ERP — Point of Sales</title>
 
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, updateDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  // ── Firebase config (hardcoded – shared backend) ──
+<!-- Firebase SDK via CDN (compat version - lebih stabil) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyBRJ-4_NQLMKkmE99AClX1vNR5FSBtdsgw",
     authDomain: "zahir-pos.firebaseapp.com",
@@ -20,21 +18,13 @@
     messagingSenderId: "1028297544361",
     appId: "1:1028297544361:web:de8a24ab167019a6a94fb8"
   };
-
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-
+  firebase.initializeApp(firebaseConfig);
+  window.fbAuth = firebase.auth();
+  window.fbDb   = firebase.firestore();
   window.firebaseReady = true;
-  window.fbAuth = auth;
-  window.fbDb   = db;
-  window.fbModules = {
-    createUserWithEmailAndPassword, signInWithEmailAndPassword,
-    signOut, onAuthStateChanged, sendPasswordResetEmail,
-    doc, setDoc, getDoc, collection, addDoc, getDocs,
-    deleteDoc, updateDoc, query, orderBy, serverTimestamp
-  };
-  window.dispatchEvent(new Event('firebase-ready'));
+
+  // Compat API wrappers → sama seperti modular tapi pakai firebase.firestore.*
+  // Firebase compat API - panggil langsung via firebase.auth() dan firebase.firestore()
 </script>
 
 <!-- Chart.js -->
@@ -625,31 +615,26 @@ let payMethod = 'Tunai';
 let salesChart = null;
 
 // ── INIT ─────────────────────────────────────────────
-window.addEventListener('firebase-ready', () => {
+document.addEventListener("DOMContentLoaded", () => {
   auth = window.fbAuth;
   db   = window.fbDb;
-  const { onAuthStateChanged } = window.fbModules;
-
-  onAuthStateChanged(auth, async user => {
+  if (!auth || !db) { hideLoading(); showScreen("login"); return; }
+  auth.onAuthStateChanged(async user => {
     if (user) {
       currentUser = user;
       await loadUserData();
       await loadStoreData();
       hideLoading();
-      showScreen('app');
+      showScreen("app");
       await loadAll();
       renderDashboard();
       initChart();
     } else {
       currentUser = null;
       hideLoading();
-      showScreen('login');
+      showScreen("login");
     }
   });
-});
-
-window.addEventListener('load', () => {
-  if (!window.firebaseReady) setTimeout(() => hideLoading() || showScreen('login'), 3000);
 });
 
 function hideLoading(){ document.getElementById('loading-screen').style.display='none' }
@@ -687,33 +672,20 @@ async function finishRegister(){
   const btn = document.getElementById('reg-finish-btn');
   btn.disabled = true; btn.textContent = '⏳ Membuat akun...';
 
-  const { createUserWithEmailAndPassword, doc, setDoc, serverTimestamp } = window.fbModules;
+  const ts = firebase.firestore.FieldValue.serverTimestamp();
   try {
     // 1. Buat akun Firebase Auth
-    const cred = await createUserWithEmailAndPassword(auth, v('reg-email').trim(), v('reg-pass'));
+    const cred = await auth.createUserWithEmailAndPassword(v('reg-email').trim(), v('reg-pass'));
     const uid  = cred.user.uid;
 
     // 2. storeId = uid (setiap user punya "toko" sendiri di path stores/{uid})
     // Simpan data toko di stores/{uid}/config/store
-    const storeRef = doc(db, 'stores', uid, 'config', 'store');
-    await setDoc(storeRef, {
-      name    : storeName,
-      outlet  : v('reg-outlet').trim() || 'Pusat',
-      currency: v('reg-currency'),
-      note    : v('reg-note').trim(),
-      createdAt: serverTimestamp(),
-      ownerId : uid,
-    });
+    const storeRef = db.collection('stores').doc(uid).collection('config').doc('store');
+    await storeRef.set({ name: storeName, outlet: v('reg-outlet').trim()||'Pusat', currency: v('reg-currency'), note: v('reg-note').trim(), createdAt: ts, ownerId: uid });
 
     // 3. Simpan data user di stores/{uid}/users/{uid}
-    const userRef = doc(db, 'stores', uid, 'users', uid);
-    await setDoc(userRef, {
-      name    : v('reg-name').trim(),
-      email   : v('reg-email').trim(),
-      role    : 'superadmin',
-      storeId : uid,
-      createdAt: serverTimestamp(),
-    });
+    const userRef = db.collection('stores').doc(uid).collection('users').doc(uid);
+    await userRef.set({ name: v('reg-name').trim(), email: v('reg-email').trim(), role: 'superadmin', storeId: uid, createdAt: ts });
 
     // onAuthStateChanged akan handle sisanya
   } catch(e){
@@ -734,9 +706,8 @@ async function doLogin(){
   const btn = document.getElementById('login-btn');
   btn.disabled = true; btn.textContent = '⏳ Masuk...';
 
-  const { signInWithEmailAndPassword } = window.fbModules;
   try {
-    await signInWithEmailAndPassword(auth, email, pass);
+    await auth.signInWithEmailAndPassword(email, pass);
   } catch(e){
     btn.disabled = false; btn.textContent = 'Masuk';
     const msg = e.code === 'auth/invalid-credential' ? 'Email atau password salah.' :
@@ -747,8 +718,7 @@ async function doLogin(){
 }
 
 async function doLogout(){
-  const { signOut } = window.fbModules;
-  await signOut(auth);
+  await auth.signOut();
   cart=[]; products=[]; customers=[]; transactions=[];
   currentUser=null; userData=null; storeData=null; storeId=null;
   document.getElementById('user-menu').classList.remove('open');
@@ -758,9 +728,8 @@ async function doLogout(){
 async function forgotPass(){
   const email = v('login-email').trim();
   if(!email){ return setAlert('login-alert','Masukkan email terlebih dahulu.','error') }
-  const { sendPasswordResetEmail } = window.fbModules;
   try {
-    await sendPasswordResetEmail(auth, email);
+    await auth.sendPasswordResetEmail(email);
     setAlert('login-alert','Email reset password telah dikirim. Cek inbox Anda.','success');
   } catch(e){
     setAlert('login-alert','Gagal mengirim email reset: ' + e.message,'error');
@@ -769,58 +738,48 @@ async function forgotPass(){
 
 // ── LOAD USER & STORE ─────────────────────────────────
 async function loadUserData(){
-  const { doc, getDoc } = window.fbModules;
-  // storeId = uid pemilik. Cari user di stores/{uid}/users/{uid}
-  // Tapi user bisa kasir di toko orang lain → storeId tersimpan di user doc global
-  // Untuk simplicity: setiap user login, storeId = uid mereka sendiri KECUALI ada override
   const uid = currentUser.uid;
 
-  // Cek apakah ada storeId di localStorage (untuk kasir yang ditambahkan admin)
-  const savedStoreId = localStorage.getItem('pos_store_' + uid);
+  // Cek userStore mapping (untuk kasir di toko orang lain)
+  let savedStoreId = localStorage.getItem('pos_store_' + uid);
+  if (!savedStoreId) {
+    try {
+      const mapSnap = await db.collection('userStore').doc(uid).get();
+      if (mapSnap.exists) { savedStoreId = mapSnap.data().storeId; localStorage.setItem('pos_store_'+uid, savedStoreId); }
+    } catch {}
+  }
 
-  // Coba ambil user data dari storeId yang disimpan, atau coba uid sendiri
-  let found = false;
   const tryIds = savedStoreId ? [savedStoreId, uid] : [uid];
+  let found = false;
 
   for (const sid of tryIds) {
     try {
-      const snap = await getDoc(doc(db, 'stores', sid, 'users', uid));
-      if (snap.exists()) {
-        userData = snap.data();
-        storeId  = sid;
-        localStorage.setItem('pos_store_' + uid, sid);
-        found = true; break;
-      }
+      const snap = await db.collection('stores').doc(sid).collection('users').doc(uid).get();
+      if (snap.exists) { userData = snap.data(); storeId = sid; localStorage.setItem('pos_store_'+uid, sid); found = true; break; }
     } catch {}
   }
 
   if (!found) {
-    // User baru dari register — tunggu sebentar lalu coba lagi
-    await new Promise(r => setTimeout(r, 1200));
+    await new Promise(r => setTimeout(r, 1000));
     try {
-      const snap = await getDoc(doc(db, 'stores', uid, 'users', uid));
-      if (snap.exists()) { userData = snap.data(); storeId = uid; }
+      const snap = await db.collection('stores').doc(uid).collection('users').doc(uid).get();
+      if (snap.exists) { userData = snap.data(); storeId = uid; }
     } catch {}
     if (!userData) { userData = { name: currentUser.email, role: 'kasir' }; storeId = uid; }
   }
 
-  // Update UI
   const init = (userData.name || 'U').charAt(0).toUpperCase();
   document.getElementById('user-av').textContent = init;
   document.getElementById('um-name').textContent  = userData.name  || '-';
   document.getElementById('um-email').textContent = currentUser.email;
   document.getElementById('um-role').textContent  = userData.role  || 'kasir';
-
-  if (['admin','superadmin'].includes(userData.role)) {
-    document.getElementById('nav-settings').style.display = '';
-  }
+  if (['admin','superadmin'].includes(userData.role)) document.getElementById('nav-settings').style.display = '';
 }
 
 async function loadStoreData(){
-  const { doc, getDoc } = window.fbModules;
   try {
-    const snap = await getDoc(doc(db, 'stores', storeId, 'config', 'store'));
-    storeData  = snap.exists() ? snap.data() : { name:'POS Toko', currency:'Rp', outlet:'Pusat' };
+    const snap = await db.collection('stores').doc(storeId).collection('config').doc('store').get();
+    storeData  = snap.exists ? snap.data() : { name:'POS Toko', currency:'Rp', outlet:'Pusat' };
   } catch { storeData = { name:'POS Toko', currency:'Rp', outlet:'Pusat' } }
 
   document.getElementById('nav-store-name').textContent = storeData.name;
@@ -840,14 +799,12 @@ async function loadAll(){
 }
 
 async function loadProducts(){
-  const { collection, getDocs, query, orderBy } = window.fbModules;
-  const snap = await getDocs(query(collection(db,'stores',storeId,'products'), orderBy('name')));
+  const snap = await db.collection('stores').doc(storeId).collection('products').orderBy('name').get();
   products = snap.docs.map(d=>({id:d.id,...d.data()}));
 }
 
 async function loadCustomers(){
-  const { collection, getDocs, query, orderBy } = window.fbModules;
-  const snap = await getDocs(query(collection(db,'stores',storeId,'customers'), orderBy('name')));
+  const snap = await db.collection('stores').doc(storeId).collection('customers').orderBy('name').get();
   customers = snap.docs.map(d=>({id:d.id,...d.data()}));
   const sel = document.getElementById('cart-cust');
   sel.innerHTML = '<option value="">-- Tanpa Customer --</option>';
@@ -855,14 +812,12 @@ async function loadCustomers(){
 }
 
 async function loadTransactions(){
-  const { collection, getDocs, query, orderBy } = window.fbModules;
-  const snap = await getDocs(query(collection(db,'stores',storeId,'transactions'), orderBy('createdAt','desc')));
+  const snap = await db.collection('stores').doc(storeId).collection('transactions').orderBy('createdAt','desc').get();
   transactions = snap.docs.map(d=>({id:d.id,...d.data()}));
 }
 
 async function loadUsers(){
-  const { collection, getDocs } = window.fbModules;
-  const snap = await getDocs(collection(db,'stores',storeId,'users'));
+  const snap = await db.collection('stores').doc(storeId).collection('users').get();
   const users = snap.docs.map(d=>({id:d.id,...d.data()}));
   const tbody = document.getElementById('user-tbody');
   if(!tbody) return;
@@ -1012,17 +967,17 @@ function calcChange(){
 async function processPayment(){
   const tot=getTotal();
   if(payMethod==='Tunai'&&(parseFloat(v('pay-cash'))||0)<tot){alert('Uang yang diterima kurang!');return}
-  const { addDoc, collection, serverTimestamp, doc, updateDoc } = window.fbModules;
+  const ts2 = firebase.firestore.FieldValue.serverTimestamp();
   const invNo='INV-'+Date.now().toString().slice(-8);
   const custId=v('cart-cust');
   const custName=custId?customers.find(c=>c.id===custId)?.name:'';
   const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const pct=parseFloat(v('disc-pct'))||0;
-  const txn={ invoiceNo:invNo, total:tot, subtotal:sub, discountPct:pct, discountAmount:sub-tot, payMethod, items:cart.map(i=>({pid:i.pid,name:i.name,price:i.price,qty:i.qty,subtotal:i.price*i.qty})), customerId:custId||null, customerName:custName||'Umum', cashierName:userData?.name||currentUser.email, createdAt:serverTimestamp() };
+  const txn={ invoiceNo:invNo, total:tot, subtotal:sub, discountPct:pct, discountAmount:sub-tot, payMethod, items:cart.map(i=>({pid:i.pid,name:i.name,price:i.price,qty:i.qty,subtotal:i.price*i.qty})), customerId:custId||null, customerName:custName||'Umum', cashierName:userData?.name||currentUser.email, createdAt:ts2 };
   try{
-    await addDoc(collection(db,'stores',storeId,'transactions'),txn);
-    for(const i of cart){ const p=products.find(x=>x.id===i.pid); if(p){ await updateDoc(doc(db,'stores',storeId,'products',i.pid),{stock:p.stock-i.qty}); p.stock-=i.qty } }
-    if(custId){ const c=customers.find(x=>x.id===custId); if(c){ await updateDoc(doc(db,'stores',storeId,'customers',custId),{totalSpend:(c.totalSpend||0)+tot}); c.totalSpend=(c.totalSpend||0)+tot } }
+    await db.collection('stores').doc(storeId).collection('transactions').add(txn);
+    for(const i of cart){ const p=products.find(x=>x.id===i.pid); if(p){ await db.collection('stores').doc(storeId).collection('products').doc(i.pid).update({stock:p.stock-i.qty}); p.stock-=i.qty } }
+    if(custId){ const c=customers.find(x=>x.id===custId); if(c){ await db.collection('stores').doc(storeId).collection('customers').doc(custId).update({totalSpend:(c.totalSpend||0)+tot}); c.totalSpend=(c.totalSpend||0)+tot } }
     closeModal('modal-payment');
     showReceipt(txn);
     cart=[]; document.getElementById('disc-pct').value=0; document.getElementById('cart-cust').value='';
@@ -1103,13 +1058,12 @@ function editProduct(id){
 async function saveProduct(){
   const name=v('p-name').trim(), price=parseFloat(v('p-price')), stock=parseFloat(v('p-stock'));
   if(!name||isNaN(price)||isNaN(stock)){return setAlert('prod-alert','Nama, harga, dan stok harus diisi.','error')}
-  const { addDoc, collection, doc, updateDoc, serverTimestamp } = window.fbModules;
-  const data={ name, price, stock, cost:parseFloat(v('p-cost'))||0, category:v('p-cat').trim()||'Umum', emoji:v('p-emoji').trim()||'📦', unit:v('p-unit').trim()||'pcs', updatedAt:serverTimestamp() };
+  const data={ name, price, stock, cost:parseFloat(v('p-cost'))||0, category:v('p-cat').trim()||'Umum', emoji:v('p-emoji').trim()||'📦', unit:v('p-unit').trim()||'pcs', updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
   const btn=document.getElementById('save-prod-btn'); btn.disabled=true; btn.textContent='⏳ Menyimpan...';
   try{
     const eid=v('p-edit-id');
-    if(eid) await updateDoc(doc(db,'stores',storeId,'products',eid),data);
-    else { data.createdAt=serverTimestamp(); await addDoc(collection(db,'stores',storeId,'products'),data) }
+    if(eid) await db.collection('stores').doc(storeId).collection('products').doc(eid).update(data);
+    else { data.createdAt=firebase.firestore.FieldValue.serverTimestamp(); await db.collection('stores').doc(storeId).collection('products').add(data) }
     await loadProducts(); renderProductTable(); renderPOS();
     document.getElementById('s-prods').textContent=products.length;
     closeModal('modal-product');
@@ -1119,8 +1073,7 @@ async function saveProduct(){
 
 async function deleteProduct(id){
   if(!confirm('Hapus produk ini?')) return;
-  const { doc, deleteDoc } = window.fbModules;
-  await deleteDoc(doc(db,'stores',storeId,'products',id));
+  await db.collection('stores').doc(storeId).collection('products').doc(id).delete();
   await loadProducts(); renderProductTable(); renderPOS();
 }
 
@@ -1162,12 +1115,11 @@ function editCustomer(id){
 async function saveCustomer(){
   const name=v('c-name').trim();
   if(!name){return setAlert('cust-alert','Nama customer harus diisi.','error')}
-  const { addDoc, collection, doc, updateDoc, serverTimestamp } = window.fbModules;
-  const data={ name, email:v('c-email').trim(), phone:v('c-phone').trim(), address:v('c-addr').trim(), updatedAt:serverTimestamp() };
+  const data={ name, email:v('c-email').trim(), phone:v('c-phone').trim(), address:v('c-addr').trim(), updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
   try{
     const eid=v('c-edit-id');
-    if(eid) await updateDoc(doc(db,'stores',storeId,'customers',eid),data);
-    else { data.totalSpend=0; data.createdAt=serverTimestamp(); await addDoc(collection(db,'stores',storeId,'customers'),data) }
+    if(eid) await db.collection('stores').doc(storeId).collection('customers').doc(eid).update(data);
+    else { data.totalSpend=0; data.createdAt=firebase.firestore.FieldValue.serverTimestamp(); await db.collection('stores').doc(storeId).collection('customers').add(data) }
     await loadCustomers(); renderCustTable();
     document.getElementById('s-custs').textContent=customers.length;
     closeModal('modal-customer');
@@ -1176,8 +1128,7 @@ async function saveCustomer(){
 
 async function deleteCustomer(id){
   if(!confirm('Hapus customer ini?')) return;
-  const { doc, deleteDoc } = window.fbModules;
-  await deleteDoc(doc(db,'stores',storeId,'customers',id));
+  await db.collection('stores').doc(storeId).collection('customers').doc(id).delete();
   await loadCustomers(); renderCustTable();
 }
 
@@ -1200,10 +1151,10 @@ function loadReport(){
 
 // ── SETTINGS ──────────────────────────────────────────
 async function saveStoreSettings(){
-  const { doc, updateDoc } = window.fbModules;
+
   const data={ name:v('set-name').trim(), outlet:v('set-outlet').trim(), currency:v('set-currency'), note:v('set-note').trim() };
   try{
-    await updateDoc(doc(db,'stores',storeId,'config','store'),data);
+    await db.collection('stores').doc(storeId).collection('config').doc('store').update(data);
     storeData={...storeData,...data};
     document.getElementById('nav-store-name').textContent=data.name;
     document.getElementById('dash-title').textContent=data.name;
@@ -1223,19 +1174,17 @@ async function saveUser(){
   const name=v('u-name').trim(), email=v('u-email').trim(), pass=v('u-pass'), role=v('u-role');
   if(!name||!email||pass.length<6){return setAlert('user-modal-alert','Semua field harus diisi. Password min. 6 karakter.','error')}
   try{
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { getAuth, createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-    const { doc, setDoc, serverTimestamp } = window.fbModules;
+    // Buat secondary app Firebase compat untuk register tanpa logout user aktif
+    const secApp = firebase.apps.find(a=>a.name==='secondary') ||
+                   firebase.initializeApp(firebase.apps[0].options, 'secondary');
+    const secAuth = firebase.auth(secApp);
+    const cred = await secAuth.createUserWithEmailAndPassword(email, pass);
+    const uid2 = cred.user.uid;
+    await secAuth.signOut();
 
-    const cfg={ apiKey:"AIzaSyBRJ-4_NQLMKkmE99AClX1vNR5FSBtdsgw", authDomain:"zahir-pos.firebaseapp.com", projectId:"zahir-pos", storageBucket:"zahir-pos.firebasestorage.app", messagingSenderId:"1028297544361", appId:"1:1028297544361:web:de8a24ab167019a6a94fb8" };
-    const tmpApp=initializeApp(cfg,'tmp-'+Date.now());
-    const tmpAuth=getAuth(tmpApp);
-    const cred=await createUserWithEmailAndPassword(tmpAuth,email,pass);
-
-    // Simpan user baru di bawah storeId yang sama
-    await setDoc(doc(db,'stores',storeId,'users',cred.user.uid),{ name, email, role, storeId, createdAt:serverTimestamp() });
-    // Simpan mapping uid → storeId supaya user bisa login dan tahu storeId-nya
-    await setDoc(doc(db,'userStore',cred.user.uid),{ storeId, createdAt:serverTimestamp() });
+    const ts = firebase.firestore.FieldValue.serverTimestamp();
+    await db.collection('stores').doc(storeId).collection('users').doc(uid2).set({ name, email, role, storeId, createdAt:ts });
+    await db.collection('userStore').doc(uid2).set({ storeId, createdAt:ts });
 
     closeModal('modal-user');
     await loadUsers();
@@ -1250,8 +1199,7 @@ async function saveUser(){
 async function deleteUser(id){
   if(id===currentUser.uid){alert('Tidak bisa menghapus akun sendiri.');return}
   if(!confirm('Hapus user ini?')) return;
-  const { doc, deleteDoc } = window.fbModules;
-  await deleteDoc(doc(db,'stores',storeId,'users',id));
+  await db.collection('stores').doc(storeId).collection('users').doc(id).delete();
   await loadUsers();
 }
 
@@ -1273,19 +1221,8 @@ function setAlert(id,msg,type){
   el.innerHTML=msg?`<div class="alert alert-${type}">${msg}</div>`:'';
 }
 
-// ── LOAD USER STORE MAPPING (untuk kasir) ─────────────
-// Override loadUserData untuk cek koleksi userStore
-const _origLoadUserData = loadUserData;
-async function loadUserData(){
-  // Cek userStore mapping dulu
-  const uid = currentUser?.uid; if(!uid) return;
-  const { doc, getDoc } = window.fbModules;
-  try{
-    const mapSnap = await getDoc(doc(db,'userStore',uid));
-    if(mapSnap.exists()){ localStorage.setItem('pos_store_'+uid, mapSnap.data().storeId) }
-  }catch{}
-  await _origLoadUserData();
-}
+// ── loadUserData cek userStore mapping untuk kasir ──────
+// (sudah built-in di loadUserData via localStorage + tryIds)
 </script>
 </body>
 </html>
