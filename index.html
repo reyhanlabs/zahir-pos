@@ -835,6 +835,7 @@ function showPage(n, el){
   document.getElementById('page-'+n).classList.add('active');
   if(el){ document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active')); el.classList.add('active') }
   if(n==='pos') renderPOS();
+  if(n==='reports'){ loadTransactions().then(()=>loadReport()); }
   document.getElementById('user-menu').classList.remove('open');
 }
 
@@ -1135,7 +1136,7 @@ async function deleteCustomer(id){
 // ── REPORTS ───────────────────────────────────────────
 function loadReport(){
   const fe=document.getElementById('rpt-from'), te=document.getElementById('rpt-to');
-  if(!fe.value){ const n=new Date(); fe.value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-01`; te.value=n.toISOString().split('T')[0] }
+  if(!fe.value){ const n=new Date(); const pad=x=>String(x).padStart(2,'0'); fe.value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-01`; te.value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`; }
   const from=new Date(fe.value+'T00:00:00'), to=new Date(te.value+'T23:59:59');
   const f=transactions.filter(t=>{ const d=toDate(t.createdAt); return d>=from&&d<=to });
   const rev=f.reduce((s,t)=>s+(t.total||0),0);
