@@ -847,7 +847,7 @@ tbody tr:hover{background:#F8FAFF}
                       <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
                     </div>
                   </div>
-                  <div id="member-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden;max-height:220px;overflow-y:auto">
+                  <div id="member-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.25);overflow:hidden;max-height:260px;overflow-y:auto">
                     <div id="member-dd-list"></div>
                   </div>
                 </div>
@@ -860,7 +860,7 @@ tbody tr:hover{background:#F8FAFF}
                       <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
                     </div>
                   </div>
-                  <div id="promo-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden;max-height:220px;overflow-y:auto">
+                  <div id="promo-dd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.25);overflow:hidden;max-height:260px;overflow-y:auto">
                     <div id="promo-dd-list"></div>
                   </div>
                 </div>
@@ -875,7 +875,7 @@ tbody tr:hover{background:#F8FAFF}
                     <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
                   </div>
                 </div>
-                <div id="cust-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden;max-height:220px;overflow-y:auto">
+                <div id="cust-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:300px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.25);overflow:hidden;max-height:260px;overflow-y:auto">
                   <div id="cust-dd-list"></div>
                 </div>
               </div>
@@ -1576,7 +1576,7 @@ function populateMemberDropdown(){
   list.appendChild(hdr);
   // Item "Tanpa Member"
   const clearItem = document.createElement('div');
-  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:2px solid #F5F5F5;display:flex;align-items:center;gap:10px;font-size:12px;background:#FFFAFA';
+  clearItem.style.cssText='padding:12px 16px;cursor:pointer;border-bottom:2px solid #F0F4F8;display:flex;align-items:center;gap:12px;background:#FFFAFA';
   clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:14px">✕</div><span style="color:#546E7A;font-weight:600">Tanpa Member</span>';
   clearItem.onmouseenter=()=>clearItem.style.background='#FFEBEE';
   clearItem.onmouseleave=()=>clearItem.style.background='';
@@ -1589,16 +1589,17 @@ function populateMemberDropdown(){
     const o=document.createElement('option'); o.value=m.id; o.textContent=m.name; sel.appendChild(o);
     const tier=m.tier||'Silver';
     const div=document.createElement('div');
-    div.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:1px solid #F5F5F5;transition:.14s;display:flex;align-items:center;gap:10px';
-    div.onmouseenter=()=>div.style.background='#F8FAFF';
+    div.style.cssText='padding:12px 16px;cursor:pointer;border-bottom:1px solid #F0F4F8;transition:.14s;display:flex;align-items:center;gap:12px';
+    div.onmouseenter=()=>div.style.background='#F0F7FF';
     div.onmouseleave=()=>div.style.background='';
     div.innerHTML=`
-      <div style="width:36px;height:36px;border-radius:9px;background:${tierColors[tier]||'#E3F2FD'};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${tierIcons[tier]||'🥈'}</div>
-      <div style="flex:1;overflow:hidden">
-        <div style="font-size:13px;font-weight:800;color:#1A202C">${m.name}</div>
-        <div style="font-size:10px;color:#718096">No. ${m.cardNo||'-'} &bull; ⭐ ${(m.points||0).toLocaleString()} poin</div>
+      <div style="width:42px;height:42px;border-radius:10px;background:${tierColors[tier]||'#E3F2FD'};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${tierIcons[tier]||'🥈'}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:#1A202C;margin-bottom:3px">${m.name}</div>
+        <div style="font-size:12px;color:#546E7A">Kartu: <strong>${m.cardNo||'-'}</strong></div>
+        <div style="font-size:12px;color:#D97706;font-weight:700;margin-top:1px">⭐ ${(m.points||0).toLocaleString()} poin</div>
       </div>
-      <div style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:${tierColors[tier]||'#E3F2FD'};color:#37474F">${tier}</div>`;
+      <div style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;background:${tierColors[tier]||'#E3F2FD'};color:#37474F;white-space:nowrap">${tier}</div>`;
     div.onclick=()=>{
       sel.value=m.id;
       document.getElementById('member-dd-label').textContent=m.name;
@@ -1622,7 +1623,7 @@ function populatePromoDropdown(){
 
   // Item clear
   const clearItem=document.createElement('div');
-  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:2px solid #F5F5F5;display:flex;align-items:center;gap:10px;font-size:12px;background:#FFFAFA';
+  clearItem.style.cssText='padding:12px 16px;cursor:pointer;border-bottom:2px solid #F0F4F8;display:flex;align-items:center;gap:12px;background:#FFFAFA';
   clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:14px">✕</div><span style="color:#546E7A;font-weight:600">Tanpa Promo</span>';
   clearItem.onmouseenter=()=>clearItem.style.background='#FFEBEE';
   clearItem.onmouseleave=()=>clearItem.style.background='';
@@ -1635,14 +1636,16 @@ function populatePromoDropdown(){
     const o=document.createElement('option'); o.value=p.id; o.textContent=p.name; sel.appendChild(o);
     const val=p.type==='Diskon %'?p.value+'%':p.type==='Diskon Nominal'?fmt(p.value):String(p.value);
     const div=document.createElement('div');
-    div.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:1px solid #F5F5F5;transition:.14s;display:flex;align-items:center;gap:10px';
-    div.onmouseenter=()=>div.style.background='#F8FAFF';
+    div.style.cssText='padding:12px 16px;cursor:pointer;border-bottom:1px solid #F0F4F8;transition:.14s;display:flex;align-items:center;gap:12px';
+    div.onmouseenter=()=>div.style.background='#F0F7FF';
     div.onmouseleave=()=>div.style.background='';
     div.innerHTML=`
-      <div style="width:36px;height:36px;border-radius:9px;background:${typeColors[p.type]||'#E3F2FD'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:#2D3748">${typeIcons[p.type]||'%'}</div>
-      <div style="flex:1;overflow:hidden">
-        <div style="font-size:13px;font-weight:800;color:#1A202C">${p.name}</div>
-        <div style="font-size:11px;color:#4A5568;margin-top:2px">${p.type}: <strong style="color:#2E7D32;font-weight:800">${val}</strong>${p.minBuy>0?' &bull; <span style="color:#E65100">Min: '+fmt(p.minBuy)+'</span>':''}</div>
+      <div style="width:42px;height:42px;border-radius:10px;background:${typeColors[p.type]||'#E3F2FD'};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;color:#2D3748">${typeIcons[p.type]||'%'}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:#1A202C;margin-bottom:3px">${p.name}</div>
+        <div style="font-size:12px;color:#546E7A">${p.type}: <strong style="color:#2E7D32;font-size:13px">${val}</strong></div>
+        ${p.minBuy>0?'<div style="font-size:11px;color:#E65100;margin-top:2px">Min. belanja: '+fmt(p.minBuy)+'</div>':''}
+        ${p.desc?'<div style="font-size:11px;color:#718096;margin-top:1px">'+p.desc+'</div>':''}
       </div>`;
     div.onclick=()=>{
       sel.value=p.id;
@@ -1662,7 +1665,7 @@ function populateCustDropdown(){
   const list=document.getElementById('cust-dd-list'); if(!list) return;
   list.innerHTML='';
   const clearItem=document.createElement('div');
-  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:2px solid #F5F5F5;display:flex;align-items:center;gap:10px;font-size:12px;background:#FFFAFA';
+  clearItem.style.cssText='padding:12px 16px;cursor:pointer;border-bottom:2px solid #F0F4F8;display:flex;align-items:center;gap:12px;background:#FFFAFA';
   clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:14px">✕</div><span style="color:#546E7A;font-weight:600">Tanpa Customer</span>';
   clearItem.onmouseenter=()=>clearItem.style.background='#FFEBEE';
   clearItem.onmouseleave=()=>clearItem.style.background='';
@@ -1671,15 +1674,16 @@ function populateCustDropdown(){
 
   customers.forEach(c=>{
     const div=document.createElement('div');
-    div.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:1px solid #F5F5F5;transition:.14s;display:flex;align-items:center;gap:10px';
-    div.onmouseenter=()=>div.style.background='#F8FAFF';
+    div.style.cssText='padding:12px 16px;cursor:pointer;border-bottom:1px solid #F0F4F8;transition:.14s;display:flex;align-items:center;gap:12px';
+    div.onmouseenter=()=>div.style.background='#F0F7FF';
     div.onmouseleave=()=>div.style.background='';
     const initials=c.name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
     div.innerHTML=`
-      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C27B0,#7B1FA2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">${initials}</div>
-      <div style="flex:1;overflow:hidden">
-        <div style="font-size:13px;font-weight:800;color:#1A202C">${c.name}</div>
-        <div style="font-size:11px;color:#4A5568;margin-top:2px">${c.phone||c.email||''}${c.totalSpend?' &bull; <span style="color:#1565C0;font-weight:700">Total: '+fmt(c.totalSpend)+'</span>':''}</div>
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#9C27B0,#7B1FA2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0">${initials}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:#1A202C;margin-bottom:3px">${c.name}</div>
+        <div style="font-size:12px;color:#546E7A">${c.phone||c.email||'-'}</div>
+        ${c.totalSpend?'<div style="font-size:12px;color:#1565C0;font-weight:700;margin-top:2px">Total belanja: '+fmt(c.totalSpend)+'</div>':''}
       </div>`;
     div.onclick=()=>{
       sel.value=c.id;
