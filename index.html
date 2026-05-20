@@ -803,8 +803,14 @@ async function loadUserData(){
 async function loadStoreData(){
   try {
     const snap = await db.collection('stores').doc(storeId).collection('config').doc('store').get();
-    storeData  = snap.exists ? snap.data() : { name:'POS Toko', currency:'Rp', outlet:'Pusat' };
-  } catch { storeData = { name:'POS Toko', currency:'Rp', outlet:'Pusat' } }
+    if (snap.exists) {
+      storeData = snap.data();
+    } else {
+      // Dokumen belum ada — buat default
+      storeData = { name:'POS Toko', currency:'Rp', outlet:'Pusat', note:'' };
+      await db.collection('stores').doc(storeId).collection('config').doc('store').set(storeData);
+    }
+  } catch { storeData = { name:'POS Toko', currency:'Rp', outlet:'Pusat', note:'' } }
 
   document.getElementById('nav-store-name').textContent = storeData.name;
   document.getElementById('dash-title').textContent     = storeData.name;
@@ -1243,7 +1249,7 @@ async function saveStoreSettings(){
 
   const data={ name:v('set-name').trim(), outlet:v('set-outlet').trim(), currency:v('set-currency'), note:v('set-note').trim() };
   try{
-    await db.collection('stores').doc(storeId).collection('config').doc('store').update(data);
+    await db.collection('stores').doc(storeId).collection('config').doc('store').set(data, { merge: true });
     storeData={...storeData,...data};
     document.getElementById('nav-store-name').textContent=data.name;
     document.getElementById('dash-title').textContent=data.name;
