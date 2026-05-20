@@ -373,15 +373,20 @@ tbody tr:hover{background:#F8FAFF}
       <div class="lt">POS ERP</div>
     </div>
     <div class="nav-links">
-      <button class="nav-link active" onclick="showPage('dashboard',this)">Dashboard</button>
-      <button class="nav-link" onclick="showPage('pos',this)">Point of Sales</button>
-      <button class="nav-link" onclick="showPage('products',this)">Produk</button>
-      <button class="nav-link" onclick="showPage('customers',this)">Customer</button>
-      <button class="nav-link" onclick="showPage('reports',this)">Reports</button>
-      <button class="nav-link" id="nav-settings" onclick="showPage('settings',this)" style="display:none">Settings</button>
+      <button class="nav-link active" onclick="showPage('dashboard',this)" data-id="Dashboard" data-en="Dashboard">Dashboard</button>
+      <button class="nav-link" onclick="showPage('pos',this)" data-id="Point of Sales" data-en="Point of Sales">Point of Sales</button>
+      <button class="nav-link" onclick="showPage('products',this)" data-id="Produk" data-en="Products">Produk</button>
+      <button class="nav-link" onclick="showPage('customers',this)" data-id="Customer" data-en="Customers">Customer</button>
+      <button class="nav-link" onclick="showPage('reports',this)" data-id="Reports" data-en="Reports">Reports</button>
+      <button class="nav-link" id="nav-settings" onclick="showPage('settings',this)" style="display:none" data-id="Settings" data-en="Settings">Settings</button>
     </div>
     <div class="nav-right">
       <span class="nav-store" id="nav-store-name"></span>
+      <!-- Language Toggle -->
+      <div style="display:flex;align-items:center;background:rgba(255,255,255,.18);border-radius:99px;padding:3px;gap:2px">
+        <button id="lang-btn-id" onclick="setLang('id')" style="padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:white;color:var(--primary);transition:.18s">🇮🇩 ID</button>
+        <button id="lang-btn-en" onclick="setLang('en')" style="padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.8);transition:.18s">🇺🇸 EN</button>
+      </div>
       <div class="user-av" id="user-av" onclick="toggleUserMenu()">U</div>
     </div>
   </nav>
@@ -392,8 +397,10 @@ tbody tr:hover{background:#F8FAFF}
       <div class="email" id="um-email">-</div>
       <div class="role" id="um-role">-</div>
     </div>
-    <button class="um-item" onclick="showPage('settings',null);toggleUserMenu()">⚙️ Pengaturan</button>
-    <button class="um-item danger" onclick="doLogout()">🚪 Keluar</button>
+    <button class="um-item" onclick="showPage('settings',null);toggleUserMenu()">⚙️ <span data-id="Pengaturan" data-en="Settings">Pengaturan</span></button>
+    <a class="um-item" href="panduan-pos-erp.html" target="_blank" style="text-decoration:none">📘 <span data-id="Panduan Penggunaan" data-en="User Guide">Panduan Penggunaan</span></a>
+    <div style="border-top:1px solid var(--border);margin:4px 0"></div>
+    <button class="um-item danger" onclick="doLogout()">🚪 <span data-id="Keluar" data-en="Logout">Keluar</span></button>
   </div>
 
   <div class="page-content">
@@ -456,8 +463,19 @@ tbody tr:hover{background:#F8FAFF}
     <div class="page" id="page-products">
       <div class="page-header">
         <div><div class="page-title">Manajemen Produk</div><div class="page-sub">Kelola katalog produk toko Anda</div></div>
-        <button class="btn btn-primary" onclick="openProductModal()">+ Tambah Produk</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-outline btn-sm" onclick="exportProductCSV()" style="font-size:13px;padding:9px 16px">⬇ Export CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('csv-import-input').click()" style="font-size:13px;padding:9px 16px;color:var(--accent-green, #4CAF50);border-color:var(--green)">⬆ Import CSV</button>
+          <input type="file" id="csv-import-input" accept=".csv" style="display:none" onchange="importProductCSV(this)">
+          <button class="btn btn-primary" onclick="openProductModal()">+ Tambah Produk</button>
+        </div>
       </div>
+      <!-- Template info -->
+      <div style="background:#E3F2FD;border:1px solid #90CAF9;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#1565C0;display:flex;align-items:center;justify-content:space-between">
+        <span>📋 Format CSV: <strong>nama, kategori, harga_jual, harga_modal, stok, satuan, emoji</strong> (baris pertama = header, akan dilewati)</span>
+        <a onclick="downloadCSVTemplate()" style="cursor:pointer;font-weight:700;text-decoration:underline;color:#1565C0">Download Template</a>
+      </div>
+      <div id="import-progress" style="display:none;background:#E8F5E9;border:1px solid #A5D6A7;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:13px;color:#2E7D32"></div>
       <div class="card">
         <div class="card-header"><span class="card-header-title">Daftar Produk</span><input type="text" id="prod-search" placeholder="Cari produk..." oninput="renderProductTable()" style="padding:6px 11px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;width:190px"></div>
         <div class="table-wrap"><table><thead><tr><th>Nama Produk</th><th>Kategori</th><th>Harga Jual</th><th>Harga Modal</th><th>Stok</th><th>Status</th><th></th></tr></thead><tbody id="prod-tbody"></tbody></table></div>
@@ -653,6 +671,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await loadAll();
       renderDashboard();
       initChart();
+      setLang(currentLang); // apply saved language
     } else {
       currentUser = null;
       hideLoading();
@@ -1303,7 +1322,134 @@ function openModal(id){ document.getElementById(id).classList.add('open') }
 function closeModal(id){ document.getElementById(id).classList.remove('open') }
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open') }));
 
-// ── UTILS ─────────────────────────────────────────────
+// ── LANGUAGE ──────────────────────────────────────────
+const LANG = {
+  id: {
+    // Navbar
+    'Dashboard':'Dashboard','Point of Sales':'Point of Sales','Produk':'Produk',
+    'Customer':'Customer','Reports':'Reports','Settings':'Settings',
+    // User menu
+    'Pengaturan':'Pengaturan','Panduan Penggunaan':'Panduan Penggunaan','Keluar':'Keluar',
+    // Pages
+    'Manajemen Produk':'Manajemen Produk','Kelola katalog produk toko Anda':'Kelola katalog produk toko Anda',
+    'Data Customer':'Data Customer','Kelola database pelanggan toko':'Kelola database pelanggan toko',
+    'Laporan Penjualan':'Laporan Penjualan','Analisis performa bisnis':'Analisis performa bisnis',
+    'Pengaturan':'Pengaturan','Kelola konfigurasi toko dan pengguna':'Kelola konfigurasi toko dan pengguna',
+    // Buttons
+    'Mulai Berjualan':'Mulai Berjualan','+ Tambah Produk':'+ Tambah Produk',
+    '+ Tambah Customer':'+ Tambah Customer','⬇ Export CSV':'⬇ Export CSV',
+    '⬆ Import CSV':'⬆ Import CSV','Download Template':'Download Template',
+    // Dashboard
+    'Penjualan Hari Ini':'Penjualan Hari Ini','Total Produk':'Total Produk',
+    'Total Customer':'Total Customer','Transaksi Bulan Ini':'Transaksi Bulan Ini',
+    'Item tersedia':'Item tersedia','Terdaftar':'Terdaftar',
+    // POS
+    'Cari produk...':'Cari produk...','Semua':'Semua','Kosongkan':'Kosongkan',
+    'Keranjang':'Keranjang','DISKON (%)':'DISKON (%)','CUSTOMER':'CUSTOMER',
+    '-- Tanpa Customer --':'-- Tanpa Customer --','💳 Bayar Sekarang':'💳 Bayar Sekarang',
+    // Payment
+    '💳 Proses Pembayaran':'💳 Proses Pembayaran','Total yang harus dibayar':'Total yang harus dibayar',
+    'Metode Pembayaran':'Metode Pembayaran','Tunai':'Tunai','Transfer Bank':'Transfer Bank',
+    'QRIS':'QRIS','Kartu Debit/Kredit':'Kartu Debit/Kredit','Uang Diterima':'Uang Diterima',
+    'Kembalian':'Kembalian','Batal':'Batal','✓ Konfirmasi Bayar':'✓ Konfirmasi Bayar',
+    // Settings
+    '🏪 Info Toko':'🏪 Info Toko','Nama Toko':'Nama Toko','Outlet / Cabang':'Outlet / Cabang',
+    'Mata Uang':'Mata Uang','Catatan Struk':'Catatan Struk','💾 Simpan':'💾 Simpan',
+    '👥 Manajemen User':'👥 Manajemen User','+ Tambah User':'+ Tambah User',
+    // Table headers
+    'Nama Produk':'Nama Produk','Kategori':'Kategori','Harga Jual':'Harga Jual',
+    'Harga Modal':'Harga Modal','Stok':'Stok','Status':'Status',
+    'Nama':'Nama','Email':'Email','Telepon':'Telepon','Total Belanja':'Total Belanja',
+    'Bergabung':'Bergabung','Role':'Role',
+    'No. Faktur':'No. Faktur','Tanggal':'Tanggal','Item':'Item','Metode':'Metode','Total':'Total',
+    // Report stats
+    'Total Pendapatan':'Total Pendapatan','Jumlah Transaksi':'Jumlah Transaksi',
+    'Item Terjual':'Item Terjual','Rata-rata Transaksi':'Rata-rata Transaksi',
+    'Riwayat Transaksi':'Riwayat Transaksi',
+  },
+  en: {
+    // Navbar
+    'Dashboard':'Dashboard','Point of Sales':'Point of Sales','Produk':'Products',
+    'Customer':'Customers','Reports':'Reports','Settings':'Settings',
+    // User menu
+    'Pengaturan':'Settings','Panduan Penggunaan':'User Guide','Keluar':'Logout',
+    // Pages
+    'Manajemen Produk':'Product Management','Kelola katalog produk toko Anda':'Manage your store product catalog',
+    'Data Customer':'Customer Data','Kelola database pelanggan toko':'Manage your store customer database',
+    'Laporan Penjualan':'Sales Report','Analisis performa bisnis':'Business performance analysis',
+    'Pengaturan':'Settings','Kelola konfigurasi toko dan pengguna':'Manage store config and users',
+    // Buttons
+    'Mulai Berjualan':'Start Selling','+ Tambah Produk':'+ Add Product',
+    '+ Tambah Customer':'+ Add Customer','⬇ Export CSV':'⬇ Export CSV',
+    '⬆ Import CSV':'⬆ Import CSV','Download Template':'Download Template',
+    // Dashboard
+    'Penjualan Hari Ini':"Today's Sales",'Total Produk':'Total Products',
+    'Total Customer':'Total Customers','Transaksi Bulan Ini':'This Month Transactions',
+    'Item tersedia':'Items available','Terdaftar':'Registered',
+    // POS
+    'Cari produk...':'Search products...','Semua':'All','Kosongkan':'Clear',
+    'Keranjang':'Cart','DISKON (%)':'DISCOUNT (%)','CUSTOMER':'CUSTOMER',
+    '-- Tanpa Customer --':'-- No Customer --','💳 Bayar Sekarang':'💳 Pay Now',
+    // Payment
+    '💳 Proses Pembayaran':'💳 Process Payment','Total yang harus dibayar':'Total amount due',
+    'Metode Pembayaran':'Payment Method','Tunai':'Cash','Transfer Bank':'Bank Transfer',
+    'QRIS':'QRIS','Kartu Debit/Kredit':'Debit/Credit Card','Uang Diterima':'Amount Received',
+    'Kembalian':'Change','Batal':'Cancel','✓ Konfirmasi Bayar':'✓ Confirm Payment',
+    // Settings
+    '🏪 Info Toko':'🏪 Store Info','Nama Toko':'Store Name','Outlet / Cabang':'Branch / Outlet',
+    'Mata Uang':'Currency','Catatan Struk':'Receipt Note','💾 Simpan':'💾 Save',
+    '👥 Manajemen User':'👥 User Management','+ Tambah User':'+ Add User',
+    // Table headers
+    'Nama Produk':'Product Name','Kategori':'Category','Harga Jual':'Selling Price',
+    'Harga Modal':'Cost Price','Stok':'Stock','Status':'Status',
+    'Nama':'Name','Email':'Email','Telepon':'Phone','Total Belanja':'Total Spending',
+    'Bergabung':'Joined','Role':'Role',
+    'No. Faktur':'Invoice No.','Tanggal':'Date','Item':'Items','Metode':'Method','Total':'Total',
+    // Report stats
+    'Total Pendapatan':'Total Revenue','Jumlah Transaksi':'Transactions',
+    'Item Terjual':'Items Sold','Rata-rata Transaksi':'Avg. Transaction',
+    'Riwayat Transaksi':'Transaction History',
+  }
+};
+
+let currentLang = localStorage.getItem('pos_lang') || 'id';
+
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem('pos_lang', lang);
+
+  // Update toggle button styles
+  const btnId = document.getElementById('lang-btn-id');
+  const btnEn = document.getElementById('lang-btn-en');
+  if(btnId && btnEn){
+    if(lang === 'id'){
+      btnId.style.cssText='padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:white;color:var(--primary);transition:.18s';
+      btnEn.style.cssText='padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.8);transition:.18s';
+    } else {
+      btnEn.style.cssText='padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:white;color:var(--primary);transition:.18s';
+      btnId.style.cssText='padding:4px 11px;border-radius:99px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.8);transition:.18s';
+    }
+  }
+
+  // Translate all [data-id] elements
+  document.querySelectorAll('[data-id]').forEach(el => {
+    el.textContent = lang === 'en' ? (el.dataset.en || el.dataset.id) : el.dataset.id;
+  });
+
+  // Re-render active page to apply language
+  const activePage = document.querySelector('.page.active');
+  if(activePage){
+    const pageId = activePage.id.replace('page-','');
+    if(pageId==='products') renderProductTable();
+    if(pageId==='customers') renderCustTable();
+    if(pageId==='reports') loadReport();
+    if(pageId==='dashboard') renderDashboard();
+  }
+}
+
+function t(key){ return (LANG[currentLang]||LANG.id)[key] || key; }
+
+// ── UTILS ──────────────────────────────────────────────
 function v(id){ return document.getElementById(id)?.value||'' }
 function fmt(n, short=false){
   const cur=storeData?.currency||'Rp';
@@ -1316,8 +1462,143 @@ function setAlert(id,msg,type){
   el.innerHTML=msg?`<div class="alert alert-${type}">${msg}</div>`:'';
 }
 
-// ── loadUserData cek userStore mapping untuk kasir ──────
-// (sudah built-in di loadUserData via localStorage + tryIds)
+// ── CSV IMPORT / EXPORT ───────────────────────────────
+
+function downloadCSVTemplate(){
+  const header = 'nama,kategori,harga_jual,harga_modal,stok,satuan,emoji';
+  const contoh = [
+    'Baju Batik Pria,Pakaian,150000,90000,20,pcs,👔',
+    'Kopi Susu,Minuman,15000,7000,50,cup,☕',
+    'Sepatu Casual,Alas Kaki,250000,150000,15,pasang,👟',
+  ].join('\n');
+  downloadFile('template-produk.csv', header + '\n' + contoh, 'text/csv');
+}
+
+function exportProductCSV(){
+  if(!products.length){ alert('Belum ada produk untuk diekspor.'); return; }
+  const header = 'nama,kategori,harga_jual,harga_modal,stok,satuan,emoji';
+  const rows = products.map(p => [
+    csvEsc(p.name||''),
+    csvEsc(p.category||''),
+    p.price||0,
+    p.cost||0,
+    p.stock||0,
+    csvEsc(p.unit||'pcs'),
+    csvEsc(p.emoji||'📦'),
+  ].join(','));
+  const now = new Date();
+  const filename = `produk-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.csv`;
+  downloadFile(filename, header + '\n' + rows.join('\n'), 'text/csv');
+}
+
+function csvEsc(val){
+  // Wrap in quotes jika ada koma atau newline
+  const s = String(val||'');
+  return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g,'""')}"` : s;
+}
+
+function downloadFile(filename, content, type){
+  const blob = new Blob(['\uFEFF'+content], { type: type+';charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function importProductCSV(input){
+  const file = input.files[0]; if(!file) return;
+  input.value = ''; // reset supaya bisa upload file sama lagi
+
+  const text = await file.text();
+  const lines = text.split('\n').map(l=>l.trim()).filter(l=>l);
+
+  if(lines.length < 2){ alert('File CSV kosong atau hanya berisi header.'); return; }
+
+  // Skip baris pertama (header)
+  const dataLines = lines.slice(1);
+  const progressEl = document.getElementById('import-progress');
+  progressEl.style.display = '';
+  progressEl.textContent = `⏳ Memproses ${dataLines.length} produk...`;
+
+  let sukses = 0, gagal = 0, errors = [];
+
+  for(let i=0; i<dataLines.length; i++){
+    const line = dataLines[i];
+    if(!line) continue;
+
+    try {
+      const cols = parseCSVLine(line);
+      const nama       = cols[0]?.trim();
+      const kategori   = cols[1]?.trim() || 'Umum';
+      const hargaJual  = parseFloat((cols[2]||'0').replace(/[^0-9.]/g,'')) || 0;
+      const hargaModal = parseFloat((cols[3]||'0').replace(/[^0-9.]/g,'')) || 0;
+      const stok       = parseFloat((cols[4]||'0').replace(/[^0-9.]/g,'')) || 0;
+      const satuan     = cols[5]?.trim() || 'pcs';
+      const emoji      = cols[6]?.trim() || '📦';
+
+      if(!nama){ gagal++; errors.push(`Baris ${i+2}: nama kosong`); continue; }
+
+      const data = {
+        name     : nama,
+        category : kategori,
+        price    : hargaJual,
+        cost     : hargaModal,
+        stock    : stok,
+        unit     : satuan,
+        emoji    : emoji,
+        imageUrl : '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      };
+
+      await db.collection('stores').doc(storeId).collection('products').add(data);
+      sukses++;
+
+      // Update progress setiap 5 produk
+      if(sukses % 5 === 0){
+        progressEl.textContent = `⏳ Mengimpor... ${sukses}/${dataLines.length} produk`;
+      }
+    } catch(e){
+      gagal++;
+      errors.push(`Baris ${i+2}: ${e.message}`);
+    }
+  }
+
+  // Reload & render
+  await loadProducts();
+  renderProductTable();
+  renderPOS();
+  document.getElementById('s-prods').textContent = products.length;
+
+  // Tampilkan hasil
+  let msg = `✅ Berhasil mengimpor <strong>${sukses} produk</strong>`;
+  if(gagal > 0) msg += ` | ❌ Gagal: ${gagal} (${errors.slice(0,3).join('; ')}${errors.length>3?'...':''})`;
+  progressEl.innerHTML = msg;
+  progressEl.style.background = gagal > 0 ? '#FFF8E1' : '#E8F5E9';
+  progressEl.style.borderColor = gagal > 0 ? '#FFD54F' : '#A5D6A7';
+  progressEl.style.color = gagal > 0 ? '#E65100' : '#2E7D32';
+
+  setTimeout(()=>{ progressEl.style.display='none'; }, 6000);
+}
+
+function parseCSVLine(line){
+  // Handles quoted fields (yang mengandung koma)
+  const result = [];
+  let cur = '', inQuotes = false;
+  for(let i=0; i<line.length; i++){
+    const ch = line[i];
+    if(ch==='"'){
+      if(inQuotes && line[i+1]==='"'){ cur+='"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if(ch===',' && !inQuotes){
+      result.push(cur); cur='';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
+}
 </script>
 </body>
 </html>
