@@ -808,19 +808,36 @@ tbody tr:hover{background:#F8FAFF}
                 <span>Diskon: <span id="cart-disc" style="color:#A5D6A7;font-weight:600">Rp 0</span></span>
               </div>
               <!-- Promo aktif bar -->
-              <div id="cart-promo-bar" style="display:none;background:rgba(255,200,50,.25);border:1px solid rgba(255,220,100,.4);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:11px;color:#fff;display:none">
+              <div id="cart-promo-bar" style="display:none;background:rgba(255,200,50,.25);border:1px solid rgba(255,220,100,.4);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:11px;color:#fff">
                 <span id="cart-promo-name" style="font-weight:600"></span>
-                <button onclick="clearPromo()" style="float:right;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0">x</button>
+                <button onclick="clearPromo()" style="float:right;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0">&#x2715;</button>
               </div>
-              <div style="display:flex;gap:6px;margin-bottom:6px">
-                <div style="flex:1;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px">
-                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">DISKON %</div>
-                  <div style="display:flex;align-items:center;gap:3px">
+
+              <!-- DISKON MANUAL -->
+              <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:10px 12px;margin-bottom:6px">
+                <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">&#127991; DISKON MANUAL</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                  <div style="flex:1;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:6px;padding:6px 10px">
                     <input type="number" id="disc-pct" value="0" min="0" max="100" oninput="updateCartSum()"
-                      style="width:100%;background:transparent;border:none;outline:none;font-size:16px;font-weight:800;color:#fff;padding:0;-moz-appearance:textfield">
-                    <span style="color:rgba(255,255,255,.8);font-weight:800;font-size:15px">%</span>
+                      style="width:100%;background:transparent;border:none;outline:none;font-size:22px;font-weight:900;color:#fff;padding:0;-moz-appearance:textfield;text-align:center">
+                    <span style="color:rgba(255,255,255,.8);font-weight:900;font-size:20px">%</span>
+                  </div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.7);min-width:60px;text-align:right">
+                    Hemat<br><span id="disc-amount-preview" style="font-weight:700;color:#A5D6A7;font-size:12px">Rp 0</span>
                   </div>
                 </div>
+                <!-- Preset tombol cepat -->
+                <div style="display:flex;gap:5px">
+                  <button onclick="setDisc(0)"  style="flex:1;padding:4px 0;border-radius:5px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;cursor:pointer">0%</button>
+                  <button onclick="setDisc(5)"  style="flex:1;padding:4px 0;border-radius:5px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;cursor:pointer">5%</button>
+                  <button onclick="setDisc(10)" style="flex:1;padding:4px 0;border-radius:5px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;cursor:pointer">10%</button>
+                  <button onclick="setDisc(15)" style="flex:1;padding:4px 0;border-radius:5px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;cursor:pointer">15%</button>
+                  <button onclick="setDisc(20)" style="flex:1;padding:4px 0;border-radius:5px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;cursor:pointer">20%</button>
+                  <button onclick="setDisc(50)" style="flex:1;padding:4px 0;border-radius:5px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:11px;font-weight:700;cursor:pointer">50%</button>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:6px;margin-bottom:6px">
                 <div style="flex:2;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px">
                   <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">&#127867; MEMBER</div>
                   <select id="cart-member" onchange="onMemberChange()"
@@ -828,22 +845,13 @@ tbody tr:hover{background:#F8FAFF}
                     <option value="" style="color:#333">-- Tanpa --</option>
                   </select>
                 </div>
-              </div>
-              <!-- Member info -->
-              <div id="member-info-bar" style="display:none;background:rgba(255,255,255,.12);border-radius:8px;padding:6px 10px;margin-bottom:6px">
-                <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.9)">
-                  <span id="member-tier-badge" style="font-weight:700">Silver</span>
-                  <span>&#11088; <span id="member-points-now">0</span> poin</span>
-                  <span style="color:#A5D6A7;font-weight:700">+<span id="member-points-earn">0</span> poin</span>
+                <div style="flex:2;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px">
+                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">&#127873; PROMO</div>
+                  <select id="cart-promo" onchange="onPromoChange()"
+                    style="width:100%;background:transparent;border:none;outline:none;font-size:11px;font-weight:600;color:#fff;padding:0;cursor:pointer;-webkit-appearance:none">
+                    <option value="" style="color:#333">-- Pilih --</option>
+                  </select>
                 </div>
-              </div>
-              <!-- Promo dropdown -->
-              <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;margin-bottom:6px">
-                <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">&#127873; PROMO</div>
-                <select id="cart-promo" onchange="onPromoChange()"
-                  style="width:100%;background:transparent;border:none;outline:none;font-size:11px;font-weight:600;color:#fff;padding:0;cursor:pointer;-webkit-appearance:none">
-                  <option value="" style="color:#333">-- Pilih Promo --</option>
-                </select>
               </div>
               <!-- Customer -->
               <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;margin-bottom:10px">
@@ -1486,7 +1494,10 @@ function populatePromoDropdown(){
 
 let selectedPromoId='';
 
-function onMemberChange(){
+function setDisc(pct){
+  const el = document.getElementById('disc-pct');
+  if(el){ el.value = pct; updateCartSum(); }
+}
   const memId=v('cart-member');
   const bar=document.getElementById('member-info-bar');
   if(!memId){if(bar)bar.style.display='none'; updateCartSum(); return;}
@@ -1680,6 +1691,9 @@ function updateCartSum(){
   document.getElementById('cart-total').textContent = fmt(tot);
   const countEl=document.getElementById('cart-item-count');
   if(countEl) countEl.textContent=totalItems+' item';
+  // Preview hemat diskon manual
+  const previewEl=document.getElementById('disc-amount-preview');
+  if(previewEl) previewEl.textContent=manualDisc>0?fmt(manualDisc):'Rp 0';
   // Update poin estimasi member
   const memId=v('cart-member');
   if(memId){
