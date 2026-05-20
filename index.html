@@ -19,8 +19,8 @@
     appId: "1:1028297544361:web:de8a24ab167019a6a94fb8"
   };
   firebase.initializeApp(firebaseConfig);
-  window.fbAuth = firebase.auth();
-  window.fbDb   = firebase.firestore();
+  window.fbAuth    = firebase.auth();
+  window.fbDb      = firebase.firestore();
   window.firebaseReady = true;
 
   // Compat API wrappers → sama seperti modular tapi pakai firebase.firestore.*
@@ -562,10 +562,31 @@ tbody tr:hover{background:#F8FAFF}
   <div class="modal">
     <div class="modal-header"><div class="modal-title" id="prod-modal-title">Tambah Produk</div><button class="modal-close" onclick="closeModal('modal-product')">✕</button></div>
     <div id="prod-alert"></div>
+
+    <!-- Foto Produk -->
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Foto Produk (opsional)</label>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div id="prod-img-preview" onclick="document.getElementById('prod-img-input').click()"
+          style="width:88px;height:88px;border-radius:10px;border:2px dashed var(--border);background:#F8FAFF;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;transition:.2s"
+          onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+          <span id="prod-img-icon" style="font-size:26px">📷</span>
+          <span style="font-size:10px;color:var(--text3);margin-top:3px">Klik upload</span>
+        </div>
+        <div style="flex:1">
+          <input type="file" id="prod-img-input" accept="image/*" style="display:none" onchange="previewProductImg(this)">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('prod-img-input').click()">📁 Pilih Foto</button>
+          <button class="btn btn-sm" id="prod-img-remove" onclick="removeProductImg()" style="margin-left:6px;color:var(--red);border:1.5px solid var(--red);background:none;display:none">✕ Hapus</button>
+          <div style="font-size:11px;color:var(--text3);margin-top:6px">JPG, PNG • Dikompres otomatis • Gratis ✓</div>
+        </div>
+      </div>
+      <input type="hidden" id="prod-img-url">
+    </div>
+
     <div class="grid-2">
       <div class="form-group" style="grid-column:1/-1"><label>Nama Produk ✱</label><input type="text" id="p-name" placeholder="Nama produk"></div>
       <div class="form-group"><label>Kategori</label><input type="text" id="p-cat" placeholder="Makanan, Pakaian..."></div>
-      <div class="form-group"><label>Emoji / Ikon</label><input type="text" id="p-emoji" placeholder="🛍" maxlength="4"></div>
+      <div class="form-group"><label>Emoji (jika tanpa foto)</label><input type="text" id="p-emoji" placeholder="🛍" maxlength="4"></div>
       <div class="form-group"><label>Harga Jual ✱</label><input type="number" id="p-price" placeholder="0" min="0"></div>
       <div class="form-group"><label>Harga Modal</label><input type="number" id="p-cost" placeholder="0" min="0"></div>
       <div class="form-group"><label>Stok ✱</label><input type="number" id="p-stock" placeholder="0" min="0"></div>
@@ -892,7 +913,12 @@ function renderPOS(){
   if(search) f=f.filter(p=>p.name.toLowerCase().includes(search));
   const grid=document.getElementById('pos-grid');
   if(!f.length){ grid.innerHTML='<div class="empty-state"><div class="es-icon">🔍</div><div>Produk tidak ditemukan</div></div>'; }
-  else grid.innerHTML=f.map(p=>`<div class="product-card" onclick="addToCart('${p.id}')"><div class="prod-img">${p.emoji||'📦'}</div><div class="prod-name">${p.name}</div><div class="prod-price">${fmt(p.price)}</div><div class="prod-stock">Stok: ${p.stock} ${p.unit||'pcs'}</div></div>`).join('');
+  else grid.innerHTML=f.map(p=>`<div class="product-card" onclick="addToCart('${p.id}')">
+    <div class="prod-img">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:7px">` : (p.emoji||'📦')}</div>
+    <div class="prod-name">${p.name}</div>
+    <div class="prod-price">${fmt(p.price)}</div>
+    <div class="prod-stock">Stok: ${p.stock} ${p.unit||'pcs'}</div>
+  </div>`).join('');
 
   const cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
   document.getElementById('pos-cats').innerHTML=`<div class="chip ${catFilter==='all'?'active':''}" onclick="filterCat('all',this)">Semua</div>`+cats.map(c=>`<div class="chip ${catFilter===c?'active':''}" onclick="filterCat('${c}',this)">${c}</div>`).join('');
@@ -1021,7 +1047,7 @@ function renderProductTable(){
   const tbody=document.getElementById('prod-tbody');
   if(!f.length){ tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text2)">Belum ada produk. <a href="#" onclick="openProductModal()" style="color:var(--primary)">Tambah sekarang</a></td></tr>`; return }
   tbody.innerHTML=f.map(p=>`<tr>
-    <td><span style="margin-right:7px">${p.emoji||'📦'}</span><strong>${p.name}</strong></td>
+    <td><span style="margin-right:7px">${p.imageUrl?`<img src="${p.imageUrl}" style="width:32px;height:32px;object-fit:cover;border-radius:6px;vertical-align:middle">`:p.emoji||'📦'}</span><strong>${p.name}</strong></td>
     <td><span class="badge bg-blue">${p.category||'-'}</span></td>
     <td style="font-weight:700">${fmt(p.price)}</td>
     <td>${fmt(p.cost||0)}</td>
@@ -1037,6 +1063,9 @@ function openProductModal(){
   document.getElementById('p-emoji').value='📦';
   document.getElementById('p-unit').value='pcs';
   document.getElementById('p-edit-id').value='';
+  document.getElementById('prod-img-url').value='';
+  document.getElementById('prod-img-input').value='';
+  resetImgPreview();
   setAlert('prod-alert','','');
   openModal('modal-product');
 }
@@ -1052,14 +1081,70 @@ function editProduct(id){
   document.getElementById('p-stock').value=p.stock||0;
   document.getElementById('p-unit').value=p.unit||'pcs';
   document.getElementById('p-edit-id').value=id;
+  document.getElementById('prod-img-url').value=p.imageUrl||'';
+  document.getElementById('prod-img-input').value='';
+  // Tampilkan foto existing
+  if(p.imageUrl){
+    const prev=document.getElementById('prod-img-preview');
+    prev.innerHTML=`<img src="${p.imageUrl}" style="width:100%;height:100%;object-fit:cover">`;
+    document.getElementById('prod-img-remove').style.display='inline-flex';
+  } else {
+    resetImgPreview();
+  }
   setAlert('prod-alert','','');
   openModal('modal-product');
+}
+
+// ── IMAGE HELPERS ─────────────────────────────────────
+function resetImgPreview(){
+  document.getElementById('prod-img-preview').innerHTML=`<span id="prod-img-icon" style="font-size:26px">📷</span><span style="font-size:10px;color:var(--text3);margin-top:3px">Klik upload</span>`;
+  document.getElementById('prod-img-remove').style.display='none';
+}
+
+function removeProductImg(){
+  document.getElementById('prod-img-url').value='';
+  document.getElementById('prod-img-input').value='';
+  resetImgPreview();
+}
+
+function previewProductImg(input){
+  const file = input.files[0]; if(!file) return;
+  if(file.size > 5*1024*1024){ setAlert('prod-alert','Foto terlalu besar. Maksimal 5MB.','error'); return; }
+
+  // Kompres menggunakan Canvas
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // Resize ke max 400x400 px
+      const MAX = 400;
+      let w = img.width, h = img.height;
+      if(w > h){ if(w>MAX){h=Math.round(h*MAX/w);w=MAX;} } else { if(h>MAX){w=Math.round(w*MAX/h);h=MAX;} }
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      // Kompres ke JPEG quality 0.75
+      const compressed = canvas.toDataURL('image/jpeg', 0.75);
+      const sizeKB = Math.round(compressed.length * 0.75 / 1024);
+      if(sizeKB > 900){
+        setAlert('prod-alert','Foto terlalu besar setelah kompresi. Coba foto lain.','error'); return;
+      }
+      document.getElementById('prod-img-url').value = compressed;
+      // Tampilkan preview
+      const prev = document.getElementById('prod-img-preview');
+      prev.innerHTML=`<img src="${compressed}" style="width:100%;height:100%;object-fit:cover">`;
+      document.getElementById('prod-img-remove').style.display='inline-flex';
+      setAlert('prod-alert','','');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 async function saveProduct(){
   const name=v('p-name').trim(), price=parseFloat(v('p-price')), stock=parseFloat(v('p-stock'));
   if(!name||isNaN(price)||isNaN(stock)){return setAlert('prod-alert','Nama, harga, dan stok harus diisi.','error')}
-  const data={ name, price, stock, cost:parseFloat(v('p-cost'))||0, category:v('p-cat').trim()||'Umum', emoji:v('p-emoji').trim()||'📦', unit:v('p-unit').trim()||'pcs', updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
+  const data={ name, price, stock, cost:parseFloat(v('p-cost'))||0, category:v('p-cat').trim()||'Umum', emoji:v('p-emoji').trim()||'📦', unit:v('p-unit').trim()||'pcs', imageUrl:document.getElementById('prod-img-url').value||'', updatedAt:firebase.firestore.FieldValue.serverTimestamp() };
   const btn=document.getElementById('save-prod-btn'); btn.disabled=true; btn.textContent='⏳ Menyimpan...';
   try{
     const eid=v('p-edit-id');
