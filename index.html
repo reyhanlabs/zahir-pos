@@ -1229,13 +1229,14 @@ async function loadUserData(){
   document.getElementById('um-name').textContent  = userData.name  || '-';
   document.getElementById('um-email').textContent = currentUser.email;
   document.getElementById('um-role').textContent  = userData.role  || 'kasir';
+  const sbRole = document.getElementById('sb-role-name');
+  if(sbRole) sbRole.textContent = userData?.name || currentUser.email;
   if (['admin','superadmin'].includes(userData.role)) {
-    document.getElementById('nav-settings').style.display = '';
+    const ns = document.getElementById('nav-settings');
+    if(ns) ns.style.display = '';
     const lbl = document.getElementById('sb-settings-label');
     if(lbl) lbl.style.display = '';
   }
-  document.getElementById('sb-store-name').textContent = storeData?.name || 'POS Toko';
-  document.getElementById('sb-role-name').textContent  = userData?.name  || currentUser.email;
   initSidebar();
 }
 
@@ -1251,14 +1252,19 @@ async function loadStoreData(){
     }
   } catch { storeData = { name:'POS Toko', currency:'Rp', outlet:'Pusat', note:'' } }
 
-  document.getElementById('nav-store-name').textContent = storeData.name;
-  document.getElementById('dash-title').textContent     = storeData.name;
-  document.getElementById('dash-date').textContent      = new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const sbStore = document.getElementById('sb-store-name');
+  if(sbStore) sbStore.textContent = storeData.name;
+  const navStoreName = document.getElementById('nav-store-name');
+  if(navStoreName) navStoreName.textContent = storeData.name;
+  const dashTitle = document.getElementById('dash-title');
+  if(dashTitle) dashTitle.textContent = storeData.name;
+  const dashDate = document.getElementById('dash-date');
+  if(dashDate) dashDate.textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-  document.getElementById('set-name').value     = storeData.name    || '';
-  document.getElementById('set-outlet').value   = storeData.outlet  || '';
-  document.getElementById('set-currency').value = storeData.currency|| 'Rp';
-  document.getElementById('set-note').value     = storeData.note    || '';
+  const sn=document.getElementById('set-name'); if(sn) sn.value=storeData.name||'';
+  const so=document.getElementById('set-outlet'); if(so) so.value=storeData.outlet||'';
+  const sc=document.getElementById('set-currency'); if(sc) sc.value=storeData.currency||'Rp';
+  const snote=document.getElementById('set-note'); if(snote) snote.value=storeData.note||'';
 }
 
 // ── LOAD DATA ─────────────────────────────────────────
