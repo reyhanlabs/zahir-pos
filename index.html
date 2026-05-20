@@ -1098,9 +1098,13 @@ function filterCat(c,el){
 function addToCart(pid){
   const p=products.find(x=>x.id===pid); if(!p) return;
   const ex=cart.find(x=>x.pid===pid);
+  const isNew = !ex;
   if(ex){ if(ex.qty>=p.stock){alert('Stok tidak mencukupi!');return} ex.qty++ }
-  else cart.push({pid,name:p.name,price:p.price,qty:1,stock:p.stock});
+  else cart.unshift({pid,name:p.name,price:p.price,qty:1,stock:p.stock});
   renderCart();
+  // Scroll ke atas agar item baru/yang diupdate terlihat
+  const cartEl = document.getElementById('cart-items');
+  if(cartEl) cartEl.scrollTop = 0;
 }
 
 function changeQty(pid,d){
