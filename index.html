@@ -1498,6 +1498,8 @@ function setDisc(pct){
   const el = document.getElementById('disc-pct');
   if(el){ el.value = pct; updateCartSum(); }
 }
+
+function onMemberChange(){
   const memId=v('cart-member');
   const bar=document.getElementById('member-info-bar');
   if(!memId){if(bar)bar.style.display='none'; updateCartSum(); return;}
