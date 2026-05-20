@@ -807,9 +807,14 @@ tbody tr:hover{background:#F8FAFF}
                 <span>Subtotal: <span id="cart-sub" style="color:rgba(255,255,255,.9);font-weight:600">Rp 0</span></span>
                 <span>Diskon: <span id="cart-disc" style="color:#A5D6A7;font-weight:600">Rp 0</span></span>
               </div>
-              <div style="display:flex;gap:7px;margin-bottom:11px">
+              <!-- Promo aktif bar -->
+              <div id="cart-promo-bar" style="display:none;background:rgba(255,200,50,.25);border:1px solid rgba(255,220,100,.4);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:11px;color:#fff;display:none">
+                <span id="cart-promo-name" style="font-weight:600"></span>
+                <button onclick="clearPromo()" style="float:right;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0">x</button>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:6px">
                 <div style="flex:1;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px">
-                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">DISKON</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">DISKON %</div>
                   <div style="display:flex;align-items:center;gap:3px">
                     <input type="number" id="disc-pct" value="0" min="0" max="100" oninput="updateCartSum()"
                       style="width:100%;background:transparent;border:none;outline:none;font-size:16px;font-weight:800;color:#fff;padding:0;-moz-appearance:textfield">
@@ -817,18 +822,42 @@ tbody tr:hover{background:#F8FAFF}
                   </div>
                 </div>
                 <div style="flex:2;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px">
-                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">CUSTOMER</div>
-                  <select id="cart-cust"
+                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">&#127867; MEMBER</div>
+                  <select id="cart-member" onchange="onMemberChange()"
                     style="width:100%;background:transparent;border:none;outline:none;font-size:11px;font-weight:600;color:#fff;padding:0;cursor:pointer;-webkit-appearance:none">
                     <option value="" style="color:#333">-- Tanpa --</option>
                   </select>
                 </div>
               </div>
+              <!-- Member info -->
+              <div id="member-info-bar" style="display:none;background:rgba(255,255,255,.12);border-radius:8px;padding:6px 10px;margin-bottom:6px">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.9)">
+                  <span id="member-tier-badge" style="font-weight:700">Silver</span>
+                  <span>&#11088; <span id="member-points-now">0</span> poin</span>
+                  <span style="color:#A5D6A7;font-weight:700">+<span id="member-points-earn">0</span> poin</span>
+                </div>
+              </div>
+              <!-- Promo dropdown -->
+              <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;margin-bottom:6px">
+                <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">&#127873; PROMO</div>
+                <select id="cart-promo" onchange="onPromoChange()"
+                  style="width:100%;background:transparent;border:none;outline:none;font-size:11px;font-weight:600;color:#fff;padding:0;cursor:pointer;-webkit-appearance:none">
+                  <option value="" style="color:#333">-- Pilih Promo --</option>
+                </select>
+              </div>
+              <!-- Customer -->
+              <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;margin-bottom:10px">
+                <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">&#128100; CUSTOMER</div>
+                <select id="cart-cust"
+                  style="width:100%;background:transparent;border:none;outline:none;font-size:11px;font-weight:600;color:#fff;padding:0;cursor:pointer;-webkit-appearance:none">
+                  <option value="" style="color:#333">-- Tanpa --</option>
+                </select>
+              </div>
               <button onclick="openPayment()"
                 style="width:100%;background:#fff;color:var(--primary);font-weight:800;font-size:14px;padding:12px;border-radius:9px;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:.18s"
                 onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 18px rgba(0,0,0,.25)'"
                 onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(0,0,0,.2)'">
-                💳 Bayar Sekarang
+                &#128179; Bayar Sekarang
               </button>
             </div>
 
@@ -892,7 +921,7 @@ tbody tr:hover{background:#F8FAFF}
       </div>
       <div class="card">
         <div class="card-header"><span class="card-header-title">Riwayat Transaksi</span></div>
-        <div class="table-wrap"><table><thead><tr><th>No. Faktur</th><th>Tanggal</th><th>Customer</th><th>Item</th><th>Metode</th><th>Total</th></tr></thead><tbody id="rpt-tbody"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>No. Faktur</th><th>Tanggal</th><th>Customer/Member</th><th>Promo</th><th>Item</th><th>Metode</th><th>Total</th></tr></thead><tbody id="rpt-tbody"></tbody></table></div>
       </div>
     </div>
 
@@ -979,9 +1008,15 @@ tbody tr:hover{background:#F8FAFF}
 <div class="modal-overlay" id="modal-payment">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">💳 Proses Pembayaran</div><button class="modal-close" onclick="closeModal('modal-payment')">✕</button></div>
-    <div style="background:var(--bg);border-radius:var(--rs);padding:13px;margin-bottom:14px">
+    <div style="background:var(--bg);border-radius:var(--rs);padding:13px;margin-bottom:12px">
       <div style="font-size:12px;color:var(--text2);margin-bottom:3px">Total yang harus dibayar</div>
-      <div style="font-size:26px;font-weight:900;color:var(--primary)" id="pay-total-display">Rp 0</div>
+      <div style="font-size:28px;font-weight:900;color:var(--primary)" id="pay-total-display">Rp 0</div>
+      <div id="pay-member-info" style="display:none;margin-top:8px;padding:8px 10px;background:#E8F5E9;border-radius:8px;font-size:12px;color:#2E7D32">
+        &#127867; <strong id="pay-member-name"></strong> &middot; <span id="pay-member-tier"></span> &middot; &#11088; <span id="pay-member-pts-cur">0</span> poin &rarr; <strong id="pay-member-pts-new" style="color:#1B5E20">0</strong> poin setelah transaksi
+      </div>
+      <div id="pay-promo-info" style="display:none;margin-top:6px;padding:8px 10px;background:#FFF3E0;border-radius:8px;font-size:12px;color:#E65100">
+        &#127873; Promo: <strong id="pay-promo-name-display"></strong> &bull; Hemat <span id="pay-promo-disc-display" style="font-weight:700;color:#BF360C"></span>
+      </div>
     </div>
     <div style="margin-bottom:12px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Metode Pembayaran</div>
     <div class="pay-method-grid">
@@ -1417,8 +1452,84 @@ async function loadCustomers(){
   const snap = await db.collection('stores').doc(storeId).collection('customers').orderBy('name').get();
   customers = snap.docs.map(d=>({id:d.id,...d.data()}));
   const sel = document.getElementById('cart-cust');
-  sel.innerHTML = '<option value="">-- Tanpa Customer --</option>';
-  customers.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c.name; sel.appendChild(o) });
+  if(sel){
+    sel.innerHTML = '<option value="" style="color:#333">-- Tanpa Customer --</option>';
+    customers.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c.name; o.style.color='#333'; sel.appendChild(o); });
+  }
+  populateMemberDropdown();
+  populatePromoDropdown();
+}
+
+function populateMemberDropdown(){
+  const sel=document.getElementById('cart-member'); if(!sel) return;
+  sel.innerHTML='<option value="" style="color:#333">-- Tanpa Member --</option>';
+  const now=new Date();
+  members.filter(m=>!m.expireDate||new Date(m.expireDate)>=now).forEach(m=>{
+    const o=document.createElement('option'); o.value=m.id; o.style.color='#333';
+    o.textContent=m.name+' ('+( m.tier||'Silver')+' | Poin: '+(m.points||0)+')';
+    sel.appendChild(o);
+  });
+}
+
+function populatePromoDropdown(){
+  const sel=document.getElementById('cart-promo'); if(!sel) return;
+  const now=new Date();
+  const active=promos.filter(p=>(!p.endDate||new Date(p.endDate)>=now)&&(!p.startDate||new Date(p.startDate)<=now));
+  sel.innerHTML='<option value="" style="color:#333">-- Pilih Promo --</option>';
+  active.forEach(p=>{
+    const o=document.createElement('option'); o.value=p.id; o.style.color='#333';
+    const val=p.type==='Diskon %'?p.value+'%':p.type==='Diskon Nominal'?fmt(p.value):String(p.value);
+    o.textContent=p.name+' ('+val+')';
+    sel.appendChild(o);
+  });
+}
+
+let selectedPromoId='';
+
+function onMemberChange(){
+  const memId=v('cart-member');
+  const bar=document.getElementById('member-info-bar');
+  if(!memId){if(bar)bar.style.display='none'; updateCartSum(); return;}
+  const m=members.find(x=>x.id===memId);
+  if(!m){if(bar)bar.style.display='none'; return;}
+  if(bar) bar.style.display='';
+  document.getElementById('member-tier-badge').textContent=(m.tier||'Silver');
+  document.getElementById('member-points-now').textContent=(m.points||0).toLocaleString('id-ID');
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('member-points-earn').textContent=Math.floor(sub/1000).toLocaleString('id-ID');
+  updateCartSum();
+}
+
+function onPromoChange(){
+  selectedPromoId=v('cart-promo');
+  const bar=document.getElementById('cart-promo-bar');
+  if(!selectedPromoId){if(bar)bar.style.display='none'; updateCartSum(); return;}
+  const p=promos.find(x=>x.id===selectedPromoId);
+  if(!p){if(bar)bar.style.display='none'; return;}
+  if(bar){
+    bar.style.display='';
+    const val=p.type==='Diskon %'?p.value+'%':p.type==='Diskon Nominal'?fmt(p.value):String(p.value);
+    document.getElementById('cart-promo-name').textContent=p.name+' ('+val+') - min: '+fmt(p.minBuy||0);
+  }
+  updateCartSum();
+}
+
+function clearPromo(){
+  selectedPromoId='';
+  const sel=document.getElementById('cart-promo'); if(sel) sel.value='';
+  const bar=document.getElementById('cart-promo-bar'); if(bar) bar.style.display='none';
+  updateCartSum();
+}
+
+function getPromoDiscount(sub){
+  if(!selectedPromoId) return {discAmt:0, promoLabel:''};
+  const p=promos.find(x=>x.id===selectedPromoId);
+  if(!p) return {discAmt:0, promoLabel:''};
+  if(p.minBuy && sub < p.minBuy) return {discAmt:0, promoLabel:'', minNotMet:true};
+  let discAmt=0;
+  if(p.type==='Diskon %') discAmt=sub*(p.value||0)/100;
+  else if(p.type==='Diskon Nominal') discAmt=Math.min(p.value||0, sub);
+  return {discAmt, promoLabel:p.name, promoId:p.id};
 }
 
 async function loadTransactions(){
@@ -1543,7 +1654,7 @@ function changeQty(pid,d){
 }
 
 function removeFromCart(pid){ cart=cart.filter(x=>x.pid!==pid); renderCart() }
-function clearCart(){ cart=[]; document.getElementById('disc-pct').value=0; document.getElementById('cart-cust').value=''; renderCart() }
+function clearCart(){ cart=[]; document.getElementById('disc-pct').value=0; document.getElementById('cart-cust').value=''; const cm=document.getElementById('cart-member'); if(cm) cm.value=''; const mbar=document.getElementById('member-info-bar'); if(mbar) mbar.style.display='none'; clearPromo(); renderCart(); }
 
 function renderCart(){
   const el=document.getElementById('cart-items');
@@ -1554,24 +1665,69 @@ function renderCart(){
 
 function updateCartSum(){
   const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const pct=parseFloat(v('disc-pct'))||0;
-  const disc=sub*pct/100;
-  const tot=sub-disc;
+  const manualPct=parseFloat(v('disc-pct'))||0;
+  const manualDisc=sub*manualPct/100;
+  const {discAmt:promoDisc, promoLabel, minNotMet}=getPromoDiscount(sub);
+  // Jika min belanja tidak terpenuhi, sembunyikan promo bar
+  if(minNotMet){
+    const bar=document.getElementById('cart-promo-bar'); if(bar)bar.style.display='none';
+  }
+  const totalDisc=manualDisc+promoDisc;
+  const tot=Math.max(0,sub-totalDisc);
   const totalItems=cart.reduce((s,i)=>s+i.qty,0);
   document.getElementById('cart-sub').textContent   = fmt(sub);
-  document.getElementById('cart-disc').textContent  = fmt(disc);
+  document.getElementById('cart-disc').textContent  = fmt(totalDisc);
   document.getElementById('cart-total').textContent = fmt(tot);
-  const countEl = document.getElementById('cart-item-count');
-  if(countEl) countEl.textContent = totalItems + ' item';
+  const countEl=document.getElementById('cart-item-count');
+  if(countEl) countEl.textContent=totalItems+' item';
+  // Update poin estimasi member
+  const memId=v('cart-member');
+  if(memId){
+    const earn=document.getElementById('member-points-earn');
+    if(earn) earn.textContent=Math.floor(sub/1000).toLocaleString('id-ID');
+  }
 }
 
-function getTotal(){ const s=cart.reduce((x,i)=>x+i.price*i.qty,0); const p=parseFloat(v('disc-pct'))||0; return s-s*p/100 }
+function getTotal(){
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const manualDisc=sub*(parseFloat(v('disc-pct'))||0)/100;
+  const {discAmt:promoDisc}=getPromoDiscount(sub);
+  return Math.max(0,sub-manualDisc-promoDisc);
+}
 
 function openPayment(){
   if(!cart.length){alert('Keranjang masih kosong!');return}
-  document.getElementById('pay-total-display').textContent=fmt(getTotal());
+  const tot=getTotal();
+  document.getElementById('pay-total-display').textContent=fmt(tot);
   document.getElementById('pay-cash').value='';
   document.getElementById('pay-change').textContent=fmt(0);
+  // Member info
+  const memId=v('cart-member');
+  const memInfoEl=document.getElementById('pay-member-info');
+  if(memId && memInfoEl){
+    const m=members.find(x=>x.id===memId);
+    if(m){
+      const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+      const earn=Math.floor(sub/1000);
+      document.getElementById('pay-member-name').textContent=m.name;
+      document.getElementById('pay-member-tier').textContent=m.tier||'Silver';
+      document.getElementById('pay-member-pts-cur').textContent=(m.points||0).toLocaleString('id-ID');
+      document.getElementById('pay-member-pts-new').textContent=((m.points||0)+earn).toLocaleString('id-ID');
+      memInfoEl.style.display='';
+    }
+  } else { if(memInfoEl) memInfoEl.style.display='none'; }
+  // Promo info
+  const promoInfoEl=document.getElementById('pay-promo-info');
+  if(selectedPromoId && promoInfoEl){
+    const p=promos.find(x=>x.id===selectedPromoId);
+    if(p){
+      const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+      const {discAmt}=getPromoDiscount(sub);
+      document.getElementById('pay-promo-name-display').textContent=p.name;
+      document.getElementById('pay-promo-disc-display').textContent=fmt(discAmt);
+      promoInfoEl.style.display='';
+    }
+  } else { if(promoInfoEl) promoInfoEl.style.display='none'; }
   openModal('modal-payment');
 }
 
@@ -1592,23 +1748,62 @@ function calcChange(){
 async function processPayment(){
   const tot=getTotal();
   if(payMethod==='Tunai'&&(parseFloat(v('pay-cash'))||0)<tot){alert('Uang yang diterima kurang!');return}
-  const ts2 = firebase.firestore.FieldValue.serverTimestamp();
+  const ts2=firebase.firestore.FieldValue.serverTimestamp();
   const invNo='INV-'+Date.now().toString().slice(-8);
   const custId=v('cart-cust');
-  const custName=custId?customers.find(c=>c.id===custId)?.name:'';
+  const memberId=v('cart-member');
+  const custName=custId?customers.find(c=>c.id===custId)?.name:memberId?members.find(m=>m.id===memberId)?.name:'';
   const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const pct=parseFloat(v('disc-pct'))||0;
-  const txn={ invoiceNo:invNo, total:tot, subtotal:sub, discountPct:pct, discountAmount:sub-tot, payMethod, items:cart.map(i=>({pid:i.pid,name:i.name,price:i.price,qty:i.qty,subtotal:i.price*i.qty})), customerId:custId||null, customerName:custName||'Umum', cashierName:userData?.name||currentUser.email, createdAt:ts2 };
+  const manualPct=parseFloat(v('disc-pct'))||0;
+  const {discAmt:promoDisc, promoLabel, promoId}=getPromoDiscount(sub);
+  const totalDisc=sub*manualPct/100+promoDisc;
+  const promo=selectedPromoId?promos.find(x=>x.id===selectedPromoId):null;
+  const txn={
+    invoiceNo:invNo, total:tot, subtotal:sub,
+    discountPct:manualPct, discountManual:sub*manualPct/100,
+    discountPromo:promoDisc, discountAmount:totalDisc,
+    promoId:promoId||null, promoName:promoLabel||null,
+    payMethod,
+    items:cart.map(i=>({pid:i.pid,name:i.name,price:i.price,qty:i.qty,subtotal:i.price*i.qty})),
+    customerId:custId||null, memberId:memberId||null,
+    customerName:custName||'Umum',
+    cashierName:userData?.name||currentUser.email,
+    createdAt:ts2
+  };
   try{
     await db.collection('stores').doc(storeId).collection('transactions').add(txn);
-    for(const i of cart){ const p=products.find(x=>x.id===i.pid); if(p){ await db.collection('stores').doc(storeId).collection('products').doc(i.pid).update({stock:p.stock-i.qty}); p.stock-=i.qty } }
-    if(custId){ const c=customers.find(x=>x.id===custId); if(c){ await db.collection('stores').doc(storeId).collection('customers').doc(custId).update({totalSpend:(c.totalSpend||0)+tot}); c.totalSpend=(c.totalSpend||0)+tot } }
+    // Update stok
+    for(const i of cart){
+      const p=products.find(x=>x.id===i.pid);
+      if(p){ await db.collection('stores').doc(storeId).collection('products').doc(i.pid).update({stock:p.stock-i.qty}); p.stock-=i.qty; }
+    }
+    // Update total belanja customer
+    if(custId){
+      const c=customers.find(x=>x.id===custId);
+      if(c){ await db.collection('stores').doc(storeId).collection('customers').doc(custId).update({totalSpend:(c.totalSpend||0)+tot}); c.totalSpend=(c.totalSpend||0)+tot; }
+    }
+    // Update poin member: +1 poin per Rp 1.000
+    if(memberId){
+      const m=members.find(x=>x.id===memberId);
+      if(m){
+        const earn=Math.floor(sub/1000);
+        const newPts=(m.points||0)+earn;
+        await db.collection('stores').doc(storeId).collection('members').doc(memberId).update({points:newPts, totalSpend:(m.totalSpend||0)+tot});
+        m.points=newPts; m.totalSpend=(m.totalSpend||0)+tot;
+      }
+    }
     closeModal('modal-payment');
     showReceipt(txn);
-    cart=[]; document.getElementById('disc-pct').value=0; document.getElementById('cart-cust').value='';
+    // Reset cart
+    cart=[];
+    document.getElementById('disc-pct').value=0;
+    document.getElementById('cart-cust').value='';
+    document.getElementById('cart-member').value='';
+    const mbar=document.getElementById('member-info-bar'); if(mbar) mbar.style.display='none';
+    clearPromo();
     renderCart(); renderPOS();
     await loadTransactions(); renderDashboard(); initChart();
-  }catch(e){ alert('Gagal: '+e.message) }
+  }catch(e){ alert('Gagal: '+e.message); }
 }
 
 function showReceipt(txn){
@@ -1627,7 +1822,8 @@ function showReceipt(txn){
     ${txn.items.map(i=>`<div class="r-row"><span>${i.name}</span></div><div class="r-row" style="padding-left:10px"><span>${i.qty} x ${fmt(i.price)}</span><span>${fmt(i.subtotal)}</span></div>`).join('')}
     <div class="r-divider"></div>
     <div class="r-row"><span>Subtotal</span><span>${fmt(txn.subtotal)}</span></div>
-    ${txn.discountPct?`<div class="r-row"><span>Diskon (${txn.discountPct}%)</span><span>- ${fmt(txn.discountAmount)}</span></div>`:''}
+    ${txn.discountManual>0?`<div class="r-row"><span>Diskon Manual (${txn.discountPct}%)</span><span>- ${fmt(txn.discountManual)}</span></div>`:''}
+    ${txn.discountPromo>0?`<div class="r-row"><span>Promo: ${txn.promoName||''}</span><span>- ${fmt(txn.discountPromo)}</span></div>`:''}
     <div class="r-row r-total"><span>TOTAL</span><span>${fmt(txn.total)}</span></div>
     <div class="r-row"><span>Bayar (${txn.payMethod})</span><span>${fmt(rec)}</span></div>
     ${txn.payMethod==='Tunai'&&ch>=0?`<div class="r-row"><span>Kembali</span><span>${fmt(ch)}</span></div>`:''}
@@ -1830,7 +2026,7 @@ function loadReport(){
   document.getElementById('rpt-avg').textContent  =fmt(f.length?rev/f.length:0);
   const tbody=document.getElementById('rpt-tbody');
   if(!f.length){tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:36px;color:var(--text2)">Tidak ada transaksi pada periode ini.</td></tr>`;return}
-  tbody.innerHTML=f.map(t=>{ const d=toDate(t.createdAt); return `<tr><td style="font-weight:700;color:var(--primary)">${t.invoiceNo||'-'}</td><td>${d.toLocaleDateString('id-ID')} ${d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</td><td>${t.customerName||'Umum'}</td><td>${t.items?.reduce((s,i)=>s+i.qty,0)||0} item</td><td><span class="badge bg-blue">${t.payMethod||'-'}</span></td><td style="font-weight:700">${fmt(t.total)}</td></tr>` }).join('');
+  tbody.innerHTML=f.map(t=>{ const d=toDate(t.createdAt); const custLabel=(t.memberId?'[M] ':'')+( t.customerName||'Umum'); return `<tr><td style="font-weight:700;color:var(--primary)">${t.invoiceNo||'-'}</td><td>${d.toLocaleDateString('id-ID')} ${d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</td><td>${custLabel}</td><td>${t.promoName?'<span class="badge bg-orange">'+t.promoName+'</span>':'-'}</td><td>${t.items?.reduce((s,i)=>s+i.qty,0)||0} item</td><td><span class="badge bg-blue">${t.payMethod||'-'}</span></td><td style="font-weight:700">${fmt(t.total)}</td></tr>` }).join('');
 }
 
 // ── SETTINGS ──────────────────────────────────────────
