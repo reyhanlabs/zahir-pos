@@ -839,53 +839,51 @@ tbody tr:hover{background:#F8FAFF}
 
               <div style="display:flex;gap:6px;margin-bottom:6px">
                 <!-- MEMBER -->
-                <div style="flex:1;background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);transition:.2s" onclick="toggleCartDropdown('member-dd')" id="member-dd-btn">
-                  <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🎫 MEMBER</div>
-                  <div style="display:flex;align-items:center;justify-content:space-between">
-                    <span id="member-dd-label" style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">-- Tanpa --</span>
-                    <span style="color:rgba(255,255,255,.6);font-size:10px">&#9660;</span>
+                <div style="flex:1;position:relative">
+                  <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);transition:.2s" onclick="toggleCartDropdown('member-dd')" id="member-dd-btn">
+                    <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🎫 MEMBER</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+                      <span id="member-dd-label" style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Tanpa --</span>
+                      <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
+                    </div>
+                  </div>
+                  <div id="member-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden;max-height:220px;overflow-y:auto">
+                    <div id="member-dd-list"></div>
                   </div>
                 </div>
                 <!-- PROMO -->
-                <div style="flex:1;background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);transition:.2s" onclick="toggleCartDropdown('promo-dd')" id="promo-dd-btn">
-                  <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🎁 PROMO</div>
-                  <div style="display:flex;align-items:center;justify-content:space-between">
-                    <span id="promo-dd-label" style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">-- Pilih --</span>
-                    <span style="color:rgba(255,255,255,.6);font-size:10px">&#9660;</span>
+                <div style="flex:1;position:relative">
+                  <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);transition:.2s" onclick="toggleCartDropdown('promo-dd')" id="promo-dd-btn">
+                    <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🎁 PROMO</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+                      <span id="promo-dd-label" style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Pilih --</span>
+                      <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
+                    </div>
+                  </div>
+                  <div id="promo-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden;max-height:220px;overflow-y:auto">
+                    <div id="promo-dd-list"></div>
                   </div>
                 </div>
               </div>
 
               <!-- CUSTOMER -->
-              <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;margin-bottom:8px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2)" onclick="toggleCartDropdown('cust-dd')" id="cust-dd-btn">
-                <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">👤 CUSTOMER</div>
-                <div style="display:flex;align-items:center;justify-content:space-between">
-                  <span id="cust-dd-label" style="font-size:11px;font-weight:700;color:#fff">-- Tanpa --</span>
-                  <span style="color:rgba(255,255,255,.6);font-size:10px">&#9660;</span>
+              <div style="position:relative;margin-bottom:8px">
+                <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;cursor:pointer;border:1.5px solid rgba(255,255,255,.2)" onclick="toggleCartDropdown('cust-dd')" id="cust-dd-btn">
+                  <div style="font-size:9px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">👤 CUSTOMER</div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+                    <span id="cust-dd-label" style="font-size:11px;font-weight:700;color:#fff">-- Tanpa --</span>
+                    <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
+                  </div>
                 </div>
-              </div>
-
-              <!-- Hidden selects (still used for value) -->
-              <select id="cart-member" onchange="onMemberChange()" style="display:none"></select>
-              <select id="cart-promo"  onchange="onPromoChange()"  style="display:none"></select>
-              <select id="cart-cust"   style="display:none"></select>
-
-              <!-- Dropdown panels -->
-              <div id="member-dd" style="display:none;position:relative;z-index:50;margin-bottom:6px">
-                <div style="background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);overflow:hidden;max-height:200px;overflow-y:auto">
-                  <div id="member-dd-list"></div>
-                </div>
-              </div>
-              <div id="promo-dd" style="display:none;position:relative;z-index:50;margin-bottom:6px">
-                <div style="background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);overflow:hidden;max-height:200px;overflow-y:auto">
-                  <div id="promo-dd-list"></div>
-                </div>
-              </div>
-              <div id="cust-dd" style="display:none;position:relative;z-index:50;margin-bottom:8px">
-                <div style="background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);overflow:hidden;max-height:200px;overflow-y:auto">
+                <div id="cust-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.22);overflow:hidden;max-height:220px;overflow-y:auto">
                   <div id="cust-dd-list"></div>
                 </div>
               </div>
+
+              <!-- Hidden selects -->
+              <select id="cart-member" onchange="onMemberChange()" style="display:none"></select>
+              <select id="cart-promo"  onchange="onPromoChange()"  style="display:none"></select>
+              <select id="cart-cust"   style="display:none"></select>
 
               <!-- Member info bar -->
               <div id="member-info-bar" style="display:none;background:rgba(165,214,167,.2);border:1px solid rgba(165,214,167,.4);border-radius:8px;padding:8px 10px;margin-bottom:8px">
@@ -1571,12 +1569,16 @@ function populateMemberDropdown(){
   list.innerHTML='';
   const now=new Date();
   const active=members.filter(m=>!m.expireDate||new Date(m.expireDate)>=now);
-
+  // Header
+  const hdr=document.createElement('div');
+  hdr.style.cssText='padding:8px 14px 5px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#94A3B8;background:#F8FAFC;border-bottom:1px solid #F1F5F9';
+  hdr.textContent='PILIH MEMBER';
+  list.appendChild(hdr);
   // Item "Tanpa Member"
   const clearItem = document.createElement('div');
-  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:1px solid #F5F5F5;display:flex;align-items:center;gap:10px;color:#718096;font-size:12px;font-weight:600';
-  clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center">✕</div> Tanpa Member';
-  clearItem.onmouseenter=()=>clearItem.style.background='#FFF5F5';
+  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:2px solid #F5F5F5;display:flex;align-items:center;gap:10px;font-size:12px;background:#FFFAFA';
+  clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:14px">✕</div><span style="color:#546E7A;font-weight:600">Tanpa Member</span>';
+  clearItem.onmouseenter=()=>clearItem.style.background='#FFEBEE';
   clearItem.onmouseleave=()=>clearItem.style.background='';
   clearItem.onclick=()=>{ sel.value=''; document.getElementById('member-dd-label').textContent='-- Tanpa --'; toggleCartDropdown('member-dd'); onMemberChange(); };
   list.appendChild(clearItem);
@@ -1593,10 +1595,10 @@ function populateMemberDropdown(){
     div.innerHTML=`
       <div style="width:36px;height:36px;border-radius:9px;background:${tierColors[tier]||'#E3F2FD'};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${tierIcons[tier]||'🥈'}</div>
       <div style="flex:1;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;color:#2D3748">${m.name}</div>
+        <div style="font-size:13px;font-weight:800;color:#1A202C">${m.name}</div>
         <div style="font-size:10px;color:#718096">No. ${m.cardNo||'-'} &bull; ⭐ ${(m.points||0).toLocaleString()} poin</div>
       </div>
-      <div style="font-size:10px;font-weight:700;color:var(--primary)">${tier}</div>`;
+      <div style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:${tierColors[tier]||'#E3F2FD'};color:#37474F">${tier}</div>`;
     div.onclick=()=>{
       sel.value=m.id;
       document.getElementById('member-dd-label').textContent=m.name;
@@ -1620,9 +1622,9 @@ function populatePromoDropdown(){
 
   // Item clear
   const clearItem=document.createElement('div');
-  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:1px solid #F5F5F5;display:flex;align-items:center;gap:10px;color:#718096;font-size:12px;font-weight:600';
-  clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center">✕</div> Tanpa Promo';
-  clearItem.onmouseenter=()=>clearItem.style.background='#FFF5F5';
+  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:2px solid #F5F5F5;display:flex;align-items:center;gap:10px;font-size:12px;background:#FFFAFA';
+  clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:14px">✕</div><span style="color:#546E7A;font-weight:600">Tanpa Promo</span>';
+  clearItem.onmouseenter=()=>clearItem.style.background='#FFEBEE';
   clearItem.onmouseleave=()=>clearItem.style.background='';
   clearItem.onclick=()=>{ clearPromo(); document.getElementById('promo-dd-label').textContent='-- Pilih --'; toggleCartDropdown('promo-dd'); };
   list.appendChild(clearItem);
@@ -1639,8 +1641,8 @@ function populatePromoDropdown(){
     div.innerHTML=`
       <div style="width:36px;height:36px;border-radius:9px;background:${typeColors[p.type]||'#E3F2FD'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;color:#2D3748">${typeIcons[p.type]||'%'}</div>
       <div style="flex:1;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;color:#2D3748">${p.name}</div>
-        <div style="font-size:10px;color:#718096">${p.type}: <strong style="color:var(--green)">${val}</strong>${p.minBuy>0?' &bull; Min: '+fmt(p.minBuy):''}</div>
+        <div style="font-size:13px;font-weight:800;color:#1A202C">${p.name}</div>
+        <div style="font-size:11px;color:#4A5568;margin-top:2px">${p.type}: <strong style="color:#2E7D32;font-weight:800">${val}</strong>${p.minBuy>0?' &bull; <span style="color:#E65100">Min: '+fmt(p.minBuy)+'</span>':''}</div>
       </div>`;
     div.onclick=()=>{
       sel.value=p.id;
@@ -1660,9 +1662,9 @@ function populateCustDropdown(){
   const list=document.getElementById('cust-dd-list'); if(!list) return;
   list.innerHTML='';
   const clearItem=document.createElement('div');
-  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:1px solid #F5F5F5;display:flex;align-items:center;gap:10px;color:#718096;font-size:12px;font-weight:600';
-  clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#F5F5F5;display:flex;align-items:center;justify-content:center">✕</div> Tanpa Customer';
-  clearItem.onmouseenter=()=>clearItem.style.background='#FFF5F5';
+  clearItem.style.cssText='padding:10px 14px;cursor:pointer;border-bottom:2px solid #F5F5F5;display:flex;align-items:center;gap:10px;font-size:12px;background:#FFFAFA';
+  clearItem.innerHTML='<div style="width:32px;height:32px;border-radius:8px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:14px">✕</div><span style="color:#546E7A;font-weight:600">Tanpa Customer</span>';
+  clearItem.onmouseenter=()=>clearItem.style.background='#FFEBEE';
   clearItem.onmouseleave=()=>clearItem.style.background='';
   clearItem.onclick=()=>{ sel.value=''; document.getElementById('cust-dd-label').textContent='-- Tanpa --'; toggleCartDropdown('cust-dd'); };
   list.appendChild(clearItem);
@@ -1676,8 +1678,8 @@ function populateCustDropdown(){
     div.innerHTML=`
       <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C27B0,#7B1FA2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">${initials}</div>
       <div style="flex:1;overflow:hidden">
-        <div style="font-size:12px;font-weight:700;color:#2D3748">${c.name}</div>
-        <div style="font-size:10px;color:#718096">${c.phone||c.email||''}${c.totalSpend?' &bull; Total: '+fmt(c.totalSpend):''}</div>
+        <div style="font-size:13px;font-weight:800;color:#1A202C">${c.name}</div>
+        <div style="font-size:11px;color:#4A5568;margin-top:2px">${c.phone||c.email||''}${c.totalSpend?' &bull; <span style="color:#1565C0;font-weight:700">Total: '+fmt(c.totalSpend)+'</span>':''}</div>
       </div>`;
     div.onclick=()=>{
       sel.value=c.id;
