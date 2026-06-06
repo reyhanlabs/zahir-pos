@@ -192,15 +192,21 @@ body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:
 .um-item svg{opacity:.55;flex-shrink:0}
 
 /* ── SIDEBAR ────────────────────────────────────────────── */
+/* Sidebar transition smooth */
 .sidebar{
   position:fixed;top:58px;left:0;bottom:0;width:240px;
   background:#fff;border-right:1px solid var(--border);
   display:flex;flex-direction:column;z-index:200;
-  transition:width .25s cubic-bezier(.4,0,.2,1);
+  transition:width .22s cubic-bezier(.4,0,.2,1);
   overflow:hidden;
   box-shadow:2px 0 16px rgba(0,0,0,.06);
 }
 .sidebar.collapsed{width:62px}
+/* Hide inner toggle text when collapsed, show expand icon */
+.sidebar.collapsed #sb-inner-toggle{
+  font-size:14px;
+}
+/* Hide sb-info when collapsed */
 .sidebar-overlay{
   display:none;position:fixed;inset:0;
   background:rgba(0,0,0,.3);z-index:190;
@@ -299,11 +305,29 @@ body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:
 .app-body{
   display:flex;margin-top:58px;flex:1;min-height:0;
 }
+
+/* Sidebar spacer */
 .sidebar-spacer{
   width:240px;flex-shrink:0;
-  transition:width .25s cubic-bezier(.4,0,.2,1);
+  transition:width .22s cubic-bezier(.4,0,.2,1);
 }
 .sidebar-spacer.collapsed{width:62px}
+
+/* Collapsed: show expand button at top as pill */
+.sidebar.collapsed .sb-profile{
+  justify-content:center;
+  padding:12px 0;
+}
+.sidebar.collapsed #sb-inner-toggle{
+  margin:0 auto;
+  width:36px;height:36px;border-radius:10px;font-size:16px;
+}
+/* Nav link collapse transition */
+.nl-label{
+  transition:opacity .15s, width .15s, max-width .22s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;white-space:nowrap;max-width:200px;
+}
+.sidebar.collapsed .nl-label{opacity:0;max-width:0;width:0}
 .page-content{flex:1;padding:22px 26px;overflow-y:auto;min-height:0;display:flex;flex-direction:column}
 .page{display:none;flex:1;min-height:0}
 .page.active{display:flex;flex-direction:column}
@@ -688,6 +712,10 @@ tbody tr:hover{background:#F8FAFF}
         <div class="sb-store-nm" id="sb-store-name">Toko</div>
         <div class="sb-user-nm" id="sb-role-name">User</div>
       </div>
+      <button id="sb-inner-toggle" onclick="toggleSidebar()" title="Tutup menu"
+        style="width:26px;height:26px;border-radius:7px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:300;flex-shrink:0;line-height:1;transition:.2s"
+        onmouseover="this.style.background='rgba(255,255,255,.28)'"
+        onmouseout="this.style.background='rgba(255,255,255,.15)'">&#8249;</button>
     </div>
 
     <nav class="sb-nav">
@@ -1282,27 +1310,29 @@ function closeSidebar(){
 }
 
 function applySidebar(){
-  const sb   = document.getElementById('sidebar');
-  const sp   = document.getElementById('sidebar-spacer');
-  const ovl  = document.getElementById('sb-overlay');
-  const btn  = document.getElementById('sb-toggle-btn');
+  const sb  = document.getElementById('sidebar');
+  const sp  = document.getElementById('sidebar-spacer');
+  const btn = document.getElementById('sb-toggle-btn');
+  const innerBtn = document.getElementById('sb-inner-toggle');
   if(!sb) return;
 
   if(sidebarOpen){
     sb.classList.remove('collapsed');
-    if(sp) { sp.classList.remove('collapsed'); sp.style.width='230px'; }
-    if(btn) btn.textContent = '☰';
-    if(ovl) ovl.classList.remove('show');
+    if(sp){ sp.style.width='240px'; sp.classList.remove('collapsed'); }
+    // Ikon panah kiri (tutup)
+    if(btn) btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+    if(innerBtn) innerBtn.innerHTML = '&#8249;';
+    if(innerBtn) innerBtn.title = 'Tutup menu';
   } else {
     sb.classList.add('collapsed');
-    if(sp) { sp.classList.add('collapsed'); sp.style.width='60px'; }
-    if(btn) btn.textContent = '☰';
-    if(ovl) ovl.classList.remove('show');
+    if(sp){ sp.style.width='62px'; sp.classList.add('collapsed'); }
+    if(btn) btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+    if(innerBtn) innerBtn.innerHTML = '&#8250;';
+    if(innerBtn) innerBtn.title = 'Buka menu';
   }
   localStorage.setItem('pos_sidebar', sidebarOpen ? '1' : '0');
 }
 
-// Restore sidebar state
 function initSidebar(){
   sidebarOpen = localStorage.getItem('pos_sidebar') !== '0';
   applySidebar();
