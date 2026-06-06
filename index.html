@@ -331,7 +331,7 @@ body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:
 .page-content{flex:1;padding:22px 26px;overflow-y:auto;min-height:0;display:flex;flex-direction:column}
 .page{display:none;flex:1;min-height:0}
 .page.active{display:flex;flex-direction:column}
-#page-pos.active{padding:0;overflow:hidden}
+#page-pos.active{padding:0;overflow:hidden;display:flex;flex-direction:column}
 .page.active{display:block}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
 .page-title{font-size:21px;font-weight:800}
@@ -367,38 +367,75 @@ tbody tr:hover{background:#F8FAFF}
 .bg-gray{background:#F5F5F5;color:#616161}
 
 /* POS */
-.pos-layout{display:grid;grid-template-columns:1fr 360px;gap:0;height:calc(100vh - 58px);min-height:0}
-.pos-left{display:flex;flex-direction:column;min-height:0;overflow:hidden;background:#F8FAFC;border-right:1px solid var(--border)}
-.pos-right{min-height:0;overflow:hidden;display:flex;flex-direction:column;background:#fff}
-.pos-topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0}
-.search-bar{display:flex;align-items:center;gap:8px;background:#F5F6FA;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);flex:1}
+/* POS 3-panel layout */
+.pos-layout-new{
+  display:flex;height:calc(100vh - 58px);min-height:0;overflow:hidden;
+  background:#F0F2F5;
+}
+
+/* LEFT: Product Picker (slide in/out) */
+.pos-picker{
+  width:340px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  background:#fff;border-right:1px solid var(--border);
+  transition:width .22s cubic-bezier(.4,0,.2,1),opacity .2s;
+  overflow:hidden;min-height:0;
+}
+.pos-picker.hidden{width:0;opacity:0;pointer-events:none}
+.pos-picker-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.search-bar{display:flex;align-items:center;gap:8px;background:#F5F6FA;padding:7px 11px;border-radius:8px;border:1.5px solid var(--border);flex:1}
 .search-bar input{border:none;outline:none;flex:1;font-size:13px;color:var(--text);background:transparent}
-.cat-chips{display:flex;gap:5px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.cat-chips{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .cat-chips::-webkit-scrollbar{display:none}
-.chip{padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text2);transition:.14s;white-space:nowrap;flex-shrink:0}
+.chip{padding:4px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text2);transition:.14s;white-space:nowrap;flex-shrink:0}
 .chip:hover{background:#E3F2FD;border-color:var(--primary);color:var(--primary)}
 .chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.prod-list-header{display:grid;grid-template-columns:1fr 90px 36px;padding:6px 14px;background:#F8FAFC;border-bottom:2px solid var(--border);gap:8px;flex-shrink:0}
+.prod-list-header{display:grid;grid-template-columns:1fr 80px 32px;padding:5px 10px;background:#F8FAFC;border-bottom:2px solid var(--border);gap:8px;flex-shrink:0}
 .prod-list-header span{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)}
-.product-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.product-list::-webkit-scrollbar{width:4px}
+.product-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;min-height:0}
+.product-list::-webkit-scrollbar{width:3px}
 .product-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
-.prod-row{display:grid;grid-template-columns:1fr 90px 36px;align-items:center;padding:8px 14px;border-bottom:1px solid #F0F4F8;cursor:pointer;transition:.12s;gap:8px}
+.prod-row{display:grid;grid-template-columns:1fr 80px 32px;align-items:center;padding:7px 10px;border-bottom:1px solid #F0F4F8;cursor:pointer;transition:.12s;gap:8px;background:#fff}
 .prod-row:hover{background:#EBF5FF}
-.prod-row:active{background:#DBEAFE}
-.prod-row-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prod-row-meta{font-size:11px;color:var(--text2);margin-top:1px;display:flex;align-items:center;gap:5px}
-.prod-row-cat{background:#EEF2F7;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;color:var(--text2)}
-.prod-row-price{font-size:13px;font-weight:800;color:var(--primary);text-align:right}
-.prod-row-stock{font-size:10px;color:var(--text2);text-align:right;margin-top:1px}
-.prod-row-add{width:28px;height:28px;border-radius:7px;background:var(--primary);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:300;line-height:1;transition:.14s;flex-shrink:0;justify-self:center}
-.prod-row-add:hover{background:var(--primary-dark);transform:scale(1.1)}
-.prod-row-add:active{transform:scale(.93)}
-.prod-row.out{opacity:.4;pointer-events:none}
-.prod-row.low .prod-row-stock{color:var(--orange);font-weight:700}
-/* zebra stripe subtle */
 .prod-row:nth-child(even){background:#FAFBFC}
 .prod-row:nth-child(even):hover{background:#EBF5FF}
+.prod-row.out{opacity:.35;pointer-events:none}
+.prod-row.low .prod-row-stock{color:var(--orange);font-weight:700}
+.prod-row-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prod-row-meta{font-size:10px;color:var(--text2);margin-top:1px;display:flex;align-items:center;gap:4px}
+.prod-row-cat{background:#EEF2F7;padding:1px 5px;border-radius:4px;font-size:10px;font-weight:600;color:var(--text2)}
+.prod-row-price{font-size:12px;font-weight:800;color:var(--primary);text-align:right}
+.prod-row-stock{font-size:10px;text-align:right}
+.prod-row-add{width:26px;height:26px;border-radius:6px;background:var(--primary);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:300;line-height:1;transition:.14s;flex-shrink:0;justify-self:center}
+.prod-row-add:hover{background:var(--primary-dark);transform:scale(1.1)}
+
+/* CENTER: Transaction list */
+.pos-center{
+  flex:1;display:flex;flex-direction:column;min-height:0;
+  background:#fff;margin:0 1px;
+}
+.pos-center-items{
+  flex:1;overflow-y:auto;min-height:0;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.pos-center-items::-webkit-scrollbar{width:4px}
+.pos-center-items::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+
+/* Cart item row - clean table style */
+.txn-row{
+  display:grid;grid-template-columns:1fr 120px 110px 32px;
+  align-items:center;gap:8px;
+  padding:10px 16px;border-bottom:1px solid #F0F4F8;
+}
+.txn-row:nth-child(even){background:#FAFBFC}
+
+/* RIGHT: Payment panel */
+.pos-payment{
+  width:300px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  background:#fff;border-left:1px solid var(--border);
+  min-height:0;overflow-y:auto;
+}
 
 
 /* CART */
@@ -816,148 +853,181 @@ tbody tr:hover{background:#F8FAFF}
 
     <!-- ── POS ───────────────────────────────────── -->
     <div class="page" id="page-pos">
-      <div class="pos-layout">
-        <div class="pos-left">
-          <!-- Search + count -->
-          <div class="pos-topbar">
+      <div class="pos-layout-new">
+
+        <!-- ── KIRI: Product Picker (collapsible) ── -->
+        <div class="pos-picker" id="pos-picker">
+          <div class="pos-picker-head">
             <div class="search-bar">
-              <svg width="14" height="14" fill="none" stroke="#A0AEC0" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="pos-search" placeholder="Cari nama produk, kategori..." oninput="renderPOS()">
+              <svg width="13" height="13" fill="none" stroke="#94A3B8" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="pos-search" placeholder="Cari / scan barcode..." oninput="renderPOS()" style="font-size:12px">
             </div>
-            <span id="pos-count" style="font-size:11px;color:var(--text2);white-space:nowrap;font-weight:600">0 produk</span>
+            <button onclick="hidePicker()" title="Tutup"
+              style="width:28px;height:28px;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;color:var(--text2);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#8249;</button>
           </div>
-          <!-- Category chips -->
-          <div class="cat-chips" id="pos-cats"><div class="chip active" onclick="filterCat('all',this)">Semua</div></div>
-          <!-- Column header -->
-          <div class="prod-list-header">
-            <span>Produk</span>
-            <span style="text-align:right">Harga</span>
-            <span></span>
-          </div>
-          <!-- Product list -->
+          <div class="cat-chips" id="pos-cats" style="padding:7px 10px;border-bottom:1px solid var(--border)"><div class="chip active" onclick="filterCat('all',this)">Semua</div></div>
+          <div class="prod-list-header"><span>Produk</span><span style="text-align:right">Harga</span><span></span></div>
           <div class="product-list" id="pos-grid"><div class="spinner"></div></div>
         </div>
-        <div class="pos-right">
-          <div class="cart-panel">
-            <!-- HEADER -->
-            <div class="cart-head" style="background:#fff;border-bottom:2px solid var(--border)">
-              <div>
-                <h3 style="font-size:15px;font-weight:800;color:var(--text)">Keranjang Belanja</h3>
-                <div style="font-size:11px;color:var(--text2);margin-top:1px" id="cart-head-sub">Belum ada item</div>
-              </div>
-              <button style="font-size:11px;color:var(--red);border:1.5px solid var(--red);border-radius:6px;background:none;cursor:pointer;padding:4px 9px;font-weight:600" onclick="clearCart()">Kosongkan</button>
+
+        <!-- ── TENGAH: Daftar Transaksi ── -->
+        <div class="pos-center">
+          <!-- Topbar -->
+          <div style="padding:10px 16px;background:#fff;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <button onclick="showPicker()" id="show-picker-btn"
+              style="display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;flex-shrink:0"
+              onmouseover="this.style.background='#1565C0'" onmouseout="this.style.background='var(--primary)'">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah Produk
+            </button>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--text)" id="cart-head-sub">Belum ada item</div>
             </div>
+            <button onclick="clearCart()" style="padding:7px 13px;font-size:12px;color:var(--red);border:1.5px solid #FFCDD2;border-radius:7px;background:#FFF5F5;cursor:pointer;font-weight:600;flex-shrink:0">Kosongkan</button>
+          </div>
 
-            <!-- TOTAL STICKY - kompak -->
-            <div style="padding:10px 12px;background:linear-gradient(135deg,#1565C0,#2196F3);flex-shrink:0;overflow-y:auto;max-height:calc(100vh - 180px)">
-              <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px">
-                <div style="font-size:20px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1" id="cart-total">Rp 0</div>
-                <div style="color:rgba(255,255,255,.7);font-size:10px;font-weight:600" id="cart-item-count">0 item</div>
-              </div>
-              <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.6);margin-bottom:4px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.15)">
-                <span>Sub: <span id="cart-sub" style="color:rgba(255,255,255,.85);font-weight:700">Rp 0</span></span>
-                <span>Disc: <span id="cart-disc" style="color:#A5D6A7;font-weight:700">Rp 0</span></span>
-              </div>
-              <div style="background:rgba(255,255,255,.1);border-radius:5px;padding:3px 9px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center">
-                <span style="font-size:9px;color:rgba(255,255,255,.7);font-weight:600">PPN 12% sudah termasuk</span>
-                <span style="font-size:10px;color:#FDD835;font-weight:700" id="cart-ppn">Rp 0</span>
-              </div>
-              <!-- Promo aktif bar -->
-              <div id="cart-promo-bar" style="display:none;background:rgba(255,200,50,.25);border:1px solid rgba(255,220,100,.4);border-radius:6px;padding:4px 9px;margin-bottom:4px;font-size:10px;color:#fff">
-                <span id="cart-promo-name" style="font-weight:600"></span>
-                <button onclick="clearPromo()" style="float:right;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0">&#x2715;</button>
-              </div>
+          <!-- Column headers -->
+          <div style="display:grid;grid-template-columns:1fr 110px 110px 36px;gap:8px;padding:6px 16px;background:#F8FAFC;border-bottom:2px solid var(--border);flex-shrink:0">
+            <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)">Produk</span>
+            <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);text-align:center">Qty</span>
+            <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);text-align:right">Subtotal</span>
+            <span></span>
+          </div>
 
-              <!-- DISKON MANUAL kompak -->
-              <div style="background:rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;margin-bottom:5px">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                  <span style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px">&#127991; Diskon</span>
-                  <div style="flex:1;display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.12);border-radius:5px;padding:3px 8px">
-                    <input type="number" id="disc-pct" value="0" min="0" max="100" oninput="updateCartSum()"
-                      style="width:100%;background:transparent;border:none;outline:none;font-size:16px;font-weight:900;color:#fff;padding:0;-moz-appearance:textfield;text-align:center">
-                    <span style="color:rgba(255,255,255,.8);font-weight:900;font-size:14px">%</span>
-                  </div>
-                  <span style="font-size:10px;color:#A5D6A7;font-weight:700" id="disc-amount-preview">Rp 0</span>
+          <!-- Items -->
+          <div class="pos-center-items" id="cart-items"></div>
+
+          <!-- Empty state -->
+          <div id="pos-empty-hint" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text3);padding:40px;gap:12px">
+            <svg width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" style="opacity:.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <div style="font-size:15px;font-weight:700;opacity:.4">Belum ada item</div>
+            <div style="font-size:12px;opacity:.3;text-align:center">Klik <strong>Tambah Produk</strong> atau scan barcode<br>untuk mulai transaksi</div>
+          </div>
+        </div>
+
+        <!-- ── KANAN: Panel Pembayaran ── -->
+        <div class="pos-payment">
+          <!-- Member -->
+          <div style="padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px">Transaksi</div>
+            <!-- Member dd -->
+            <div style="position:relative;margin-bottom:6px">
+              <div onclick="toggleCartDropdown('member-dd')" id="member-dd-btn"
+                style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F8FAFC;border:1.5px solid var(--border);border-radius:8px;cursor:pointer">
+                <span style="font-size:14px;flex-shrink:0">🎫</span>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Member</div>
+                  <div id="member-dd-label" style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Tanpa Member --</div>
                 </div>
-                <div style="display:flex;gap:3px">
-                  <button onclick="setDisc(0)"  style="flex:1;padding:3px 0;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:700;cursor:pointer">0%</button>
-                  <button onclick="setDisc(5)"  style="flex:1;padding:3px 0;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:700;cursor:pointer">5%</button>
-                  <button onclick="setDisc(10)" style="flex:1;padding:3px 0;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:700;cursor:pointer">10%</button>
-                  <button onclick="setDisc(15)" style="flex:1;padding:3px 0;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:700;cursor:pointer">15%</button>
-                  <button onclick="setDisc(20)" style="flex:1;padding:3px 0;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:700;cursor:pointer">20%</button>
-                  <button onclick="setDisc(50)" style="flex:1;padding:3px 0;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:700;cursor:pointer">50%</button>
+                <span style="color:var(--text3);font-size:10px;flex-shrink:0">&#9660;</span>
+              </div>
+              <div id="member-dd" style="display:none;position:absolute;bottom:calc(100% + 4px);left:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 -8px 32px rgba(0,0,0,.15);overflow:hidden;max-height:220px;overflow-y:auto">
+                <div id="member-dd-list"></div>
+              </div>
+            </div>
+            <!-- Member info -->
+            <div id="member-info-bar" style="display:none;background:#E8F5E9;border:1px solid #C8E6C9;border-radius:7px;padding:6px 10px;margin-bottom:6px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#2E7D32">
+                <span id="member-tier-badge" style="font-weight:700">Silver</span>
+                <span>&#11088; <span id="member-points-now" style="font-weight:700">0</span> poin</span>
+                <span style="font-weight:700;color:#1B5E20">+<span id="member-points-earn">0</span></span>
+              </div>
+            </div>
+            <!-- Promo + Customer -->
+            <div style="display:flex;gap:6px">
+              <div style="flex:1;position:relative">
+                <div onclick="toggleCartDropdown('promo-dd')" id="promo-dd-btn"
+                  style="display:flex;align-items:center;gap:6px;padding:7px 9px;background:#F8FAFC;border:1.5px solid var(--border);border-radius:8px;cursor:pointer">
+                  <span style="font-size:13px">🎁</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Promo</div>
+                    <div id="promo-dd-label" style="font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Pilih --</div>
+                  </div>
+                </div>
+                <div id="promo-dd" style="display:none;position:absolute;bottom:calc(100% + 4px);right:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 -8px 32px rgba(0,0,0,.15);overflow:hidden;max-height:220px;overflow-y:auto">
+                  <div id="promo-dd-list"></div>
                 </div>
               </div>
-
-              <div style="display:flex;gap:6px;margin-bottom:6px">
-                <!-- MEMBER -->
-                <div style="flex:1;position:relative">
-                  <div style="background:rgba(255,255,255,.12);border-radius:8px;padding:6px 9px;cursor:pointer;border:1.5px solid rgba(255,255,255,.18)" onclick="toggleCartDropdown('member-dd')" id="member-dd-btn">
-                    <div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">🎫 Member</div>
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
-                      <span id="member-dd-label" style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Tanpa --</span>
-                      <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
-                    </div>
-                  </div>
-                  <div id="member-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.25);overflow:hidden;max-height:220px;overflow-y:auto">
-                    <div id="member-dd-list"></div>
+              <div style="flex:1;position:relative">
+                <div onclick="toggleCartDropdown('cust-dd')" id="cust-dd-btn"
+                  style="display:flex;align-items:center;gap:6px;padding:7px 9px;background:#F8FAFC;border:1.5px solid var(--border);border-radius:8px;cursor:pointer">
+                  <span style="font-size:13px">👤</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Customer</div>
+                    <div id="cust-dd-label" style="font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Tanpa --</div>
                   </div>
                 </div>
-                <!-- PROMO -->
-                <div style="flex:1;position:relative">
-                  <div style="background:rgba(255,255,255,.12);border-radius:8px;padding:6px 9px;cursor:pointer;border:1.5px solid rgba(255,255,255,.18)" onclick="toggleCartDropdown('promo-dd')" id="promo-dd-btn">
-                    <div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">🎁 Promo</div>
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
-                      <span id="promo-dd-label" style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">-- Pilih --</span>
-                      <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
-                    </div>
-                  </div>
-                  <div id="promo-dd" style="display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.25);overflow:hidden;max-height:220px;overflow-y:auto">
-                    <div id="promo-dd-list"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- CUSTOMER -->
-              <div style="position:relative;margin-bottom:8px">
-                <div style="background:rgba(255,255,255,.12);border-radius:8px;padding:6px 9px;cursor:pointer;border:1.5px solid rgba(255,255,255,.18)" onclick="toggleCartDropdown('cust-dd')" id="cust-dd-btn">
-                  <div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">👤 Customer</div>
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
-                    <span id="cust-dd-label" style="font-size:10px;font-weight:700;color:#fff">-- Tanpa --</span>
-                    <span style="color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0">&#9660;</span>
-                  </div>
-                </div>
-                <div id="cust-dd" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:300px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.25);overflow:hidden;max-height:220px;overflow-y:auto">
+                <div id="cust-dd" style="display:none;position:absolute;bottom:calc(100% + 4px);right:0;min-width:280px;width:max-content;z-index:9999;border-radius:10px;background:#fff;box-shadow:0 -8px 32px rgba(0,0,0,.15);overflow:hidden;max-height:220px;overflow-y:auto">
                   <div id="cust-dd-list"></div>
                 </div>
               </div>
-
-              <!-- Hidden selects -->
-              <select id="cart-member" onchange="onMemberChange()" style="display:none"></select>
-              <select id="cart-promo"  onchange="onPromoChange()"  style="display:none"></select>
-              <select id="cart-cust"   style="display:none"></select>
-
-              <!-- Member info bar -->
-              <div id="member-info-bar" style="display:none;background:rgba(165,214,167,.2);border:1px solid rgba(165,214,167,.4);border-radius:6px;padding:5px 9px;margin-bottom:5px">
-                <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.95)">
-                  <span id="member-tier-badge" style="font-weight:700;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:99px">Silver</span>
-                  <span>⭐ <span id="member-points-now" style="font-weight:700">0</span> poin</span>
-                  <span style="color:#A5D6A7;font-weight:700">+<span id="member-points-earn">0</span> poin</span>
-                </div>
-              </div>
-
-              <button onclick="openPayment()"
-                style="width:100%;background:#fff;color:var(--primary);font-weight:800;font-size:13px;padding:10px;border-radius:9px;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:.18s"
-                onmouseover="this.style.transform='translateY(-1px)'"
-                onmouseout="this.style.transform=''">
-                💳 Bayar Sekarang
-              </button>
             </div>
-
-            <!-- DAFTAR ITEM -->
-            <div class="cart-items" id="cart-items"></div>
+            <!-- Promo aktif bar -->
+            <div id="cart-promo-bar" style="display:none;background:#FFF8E1;border:1px solid #FFE082;border-radius:7px;padding:5px 10px;margin-top:6px;display:flex;align-items:center;justify-content:space-between">
+              <span id="cart-promo-name" style="font-size:11px;font-weight:700;color:#F57F17"></span>
+              <button onclick="clearPromo()" style="background:none;border:none;cursor:pointer;color:#F9A825;font-size:16px;padding:0;line-height:1">&#x2715;</button>
+            </div>
           </div>
+
+          <!-- Diskon -->
+          <div style="padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px">Diskon</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+              <div style="flex:1;display:flex;align-items:center;gap:4px;background:#F5F6FA;border:1.5px solid var(--border);border-radius:8px;padding:7px 12px">
+                <input type="number" id="disc-pct" value="0" min="0" max="100" oninput="updateCartSum()"
+                  style="flex:1;background:transparent;border:none;outline:none;font-size:20px;font-weight:900;color:var(--primary);padding:0;-moz-appearance:textfield;text-align:center;width:60px">
+                <span style="color:var(--text2);font-weight:800;font-size:17px">%</span>
+              </div>
+              <span id="disc-amount-preview" style="font-size:12px;font-weight:700;color:var(--red);min-width:65px;text-align:right">- Rp 0</span>
+            </div>
+            <div style="display:flex;gap:4px">
+              <button onclick="setDisc(0)"  style="flex:1;padding:5px 0;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:.12s" onmouseover="this.style.background='#E3F2FD';this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--border)';this.style.color='var(--text2)'">0%</button>
+              <button onclick="setDisc(5)"  style="flex:1;padding:5px 0;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:.12s" onmouseover="this.style.background='#E3F2FD';this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--border)';this.style.color='var(--text2)'">5%</button>
+              <button onclick="setDisc(10)" style="flex:1;padding:5px 0;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:.12s" onmouseover="this.style.background='#E3F2FD';this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--border)';this.style.color='var(--text2)'">10%</button>
+              <button onclick="setDisc(15)" style="flex:1;padding:5px 0;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:.12s" onmouseover="this.style.background='#E3F2FD';this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--border)';this.style.color='var(--text2)'">15%</button>
+              <button onclick="setDisc(20)" style="flex:1;padding:5px 0;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:.12s" onmouseover="this.style.background='#E3F2FD';this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--border)';this.style.color='var(--text2)'">20%</button>
+              <button onclick="setDisc(50)" style="flex:1;padding:5px 0;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:.12s" onmouseover="this.style.background='#E3F2FD';this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--border)';this.style.color='var(--text2)'">50%</button>
+            </div>
+          </div>
+
+          <!-- Ringkasan -->
+          <div style="padding:12px 14px;flex-shrink:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:12px;color:var(--text2)">Subtotal</span>
+              <span id="cart-sub" style="font-size:13px;font-weight:700;color:var(--text)">Rp 0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:12px;color:var(--text2)">Diskon</span>
+              <span id="cart-disc" style="font-size:13px;font-weight:700;color:var(--red)">- Rp 0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px dashed var(--border);margin-bottom:8px">
+              <span style="font-size:11px;color:var(--text3)">PPN 12% (inkl.)</span>
+              <span id="cart-ppn" style="font-size:11px;font-weight:600;color:#F59E0B">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- TOTAL + Bayar -->
+          <div style="padding:14px;background:linear-gradient(135deg,#1565C0,#2196F3);margin-top:auto;flex-shrink:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+              <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.5px">Total Bayar</span>
+              <span style="font-size:10px;color:rgba(255,255,255,.55)" id="cart-item-count">0 item</span>
+            </div>
+            <div style="font-size:34px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1;margin-bottom:14px" id="cart-total">Rp 0</div>
+            <button onclick="openPayment()"
+              style="width:100%;background:#fff;color:var(--primary);font-weight:800;font-size:15px;padding:13px;border-radius:10px;border:none;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px"
+              onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.25)'"
+              onmouseout="this.style.transform='';this.style.boxShadow=''">
+              <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Bayar Sekarang
+            </button>
+          </div>
+
+          <!-- Hidden selects -->
+          <select id="cart-member" onchange="onMemberChange()" style="display:none"></select>
+          <select id="cart-promo"  onchange="onPromoChange()"  style="display:none"></select>
+          <select id="cart-cust"   style="display:none"></select>
         </div>
+
       </div>
     </div>
 
@@ -1830,7 +1900,7 @@ function showPage(n, el){
   document.getElementById('page-'+n)?.classList.add('active');
   if(el){ document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active')); el.classList.add('active'); }
   if(n==='dashboard'){ renderDashboard(); setTimeout(initChart, 50); }
-  if(n==='pos'){ renderPOS(); populateMemberDropdown(); populatePromoDropdown(); populateCustDropdown(); }
+  if(n==='pos'){ renderPOS(); populateMemberDropdown(); populatePromoDropdown(); populateCustDropdown(); hidePicker(); }
   if(n==='reports'){ loadTransactions().then(()=>loadReport()); }
   if(n==='membership')   { loadMembers().then(()=>{ renderMemberTable(); populateMemberDropdown(); }); }
   if(n==='merchandising'){ loadPromos().then(()=>{ renderPromoTable(); populatePromoDropdown(); }); }
@@ -1973,32 +2043,51 @@ function changeQty(pid,d){
 function removeFromCart(pid){ cart=cart.filter(x=>x.pid!==pid); renderCart() }
 function clearCart(){ cart=[]; document.getElementById('disc-pct').value=0; document.getElementById('cart-cust').value=''; const cm=document.getElementById('cart-member'); if(cm) cm.value=''; const mbar=document.getElementById('member-info-bar'); if(mbar) mbar.style.display='none'; clearPromo(); renderCart(); }
 
+function showPicker(){
+  const p = document.getElementById('pos-picker');
+  if(p){ p.classList.remove('hidden'); renderPOS(); }
+  const btn = document.getElementById('show-picker-btn');
+  if(btn) btn.style.display = 'none';
+}
+function hidePicker(){
+  const p = document.getElementById('pos-picker');
+  if(p) p.classList.add('hidden');
+  const btn = document.getElementById('show-picker-btn');
+  if(btn) btn.style.display = '';
+}
+
 function renderCart(){
-  const el=document.getElementById('cart-items');
-  const subEl=document.getElementById('cart-head-sub');
+  const el  = document.getElementById('cart-items');
+  const sub = document.getElementById('cart-head-sub');
+  const emp = document.getElementById('pos-empty-hint');
+  if(!el) return;
+
   if(!cart.length){
-    el.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:var(--text3)">
-      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="opacity:.25;margin-bottom:10px"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      <div style="font-size:13px;font-weight:600">Keranjang kosong</div>
-      <div style="font-size:11px;margin-top:4px">Pilih produk dari daftar kiri</div>
-    </div>`;
-    if(subEl) subEl.textContent='Belum ada item';
+    el.innerHTML = '';
+    if(sub) sub.textContent = 'Belum ada item';
+    if(emp) emp.style.display = 'flex';
     updateCartSum(); return;
   }
-  if(subEl) subEl.textContent=`${cart.reduce((s,i)=>s+i.qty,0)} item · ${cart.length} produk`;
-  el.innerHTML=cart.map((i,idx)=>`
-    <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #F0F4F8;${idx%2===0?'background:#fff':'background:#FAFBFC'}">
-      <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.name}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:1px">${fmt(i.price)} / item</div>
+  if(emp) emp.style.display = 'none';
+  const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+  if(sub) sub.textContent = `${totalQty} item · ${cart.length} produk`;
+
+  el.innerHTML = cart.map((item, idx) => `
+    <div class="txn-row" style="${idx%2===0?'background:#fff':'background:#FAFBFC'}">
+      <div style="min-width:0">
+        <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:1px">${fmt(item.price)} / item</div>
       </div>
-      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
-        <button style="width:22px;height:22px;border-radius:5px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;font-weight:700;color:var(--primary);line-height:1;display:flex;align-items:center;justify-content:center" onclick="changeQty('${i.pid}',-1)">−</button>
-        <span style="font-size:13px;font-weight:800;min-width:22px;text-align:center;color:var(--text)">${i.qty}</span>
-        <button style="width:22px;height:22px;border-radius:5px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;font-weight:700;color:var(--primary);line-height:1;display:flex;align-items:center;justify-content:center" onclick="changeQty('${i.pid}',1)">+</button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px">
+        <button onclick="changeQty('${item.pid}',-1)"
+          style="width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:15px;font-weight:700;color:var(--primary);display:flex;align-items:center;justify-content:center;line-height:1">−</button>
+        <span style="font-size:14px;font-weight:800;min-width:24px;text-align:center;color:var(--text)">${item.qty}</span>
+        <button onclick="changeQty('${item.pid}',1)"
+          style="width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:15px;font-weight:700;color:var(--primary);display:flex;align-items:center;justify-content:center;line-height:1">+</button>
       </div>
-      <div style="font-size:12px;font-weight:800;color:var(--text);min-width:70px;text-align:right;flex-shrink:0">${fmt(i.price*i.qty)}</div>
-      <button style="width:20px;height:20px;border-radius:4px;border:none;background:#FFEBEE;color:var(--red);cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0" onclick="removeFromCart('${i.pid}')">×</button>
+      <div style="text-align:right;font-size:13px;font-weight:800;color:var(--text)">${fmt(item.price*item.qty)}</div>
+      <button onclick="removeFromCart('${item.pid}')"
+        style="width:26px;height:26px;border-radius:6px;border:none;background:#FFEBEE;color:var(--red);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;justify-self:center">×</button>
     </div>`).join('');
   updateCartSum();
 }
@@ -2022,7 +2111,7 @@ function updateCartSum(){
   if(countEl) countEl.textContent=totalItems+' item';
   // Preview hemat diskon manual
   const previewEl=document.getElementById('disc-amount-preview');
-  if(previewEl) previewEl.textContent=manualDisc>0?fmt(manualDisc):'Rp 0';
+  if(previewEl) previewEl.textContent=manualDisc>0?'- '+fmt(manualDisc):'- Rp 0';
   // PPN 12% sudah termasuk dalam harga = tot * 12/112
   const ppnEl=document.getElementById('cart-ppn');
   if(ppnEl) ppnEl.textContent=fmt(Math.round(tot*12/112));
