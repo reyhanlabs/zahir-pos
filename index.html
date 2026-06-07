@@ -192,147 +192,148 @@ body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;background:
 .um-item svg{opacity:.55;flex-shrink:0}
 
 /* ── SIDEBAR ────────────────────────────────────────────── */
-/* Sidebar transition smooth */
+/* ── SIDEBAR ─────────────────────────────────── */
 .sidebar{
-  position:fixed;top:58px;left:0;bottom:0;width:240px;
-  background:#fff;border-right:1px solid var(--border);
-  display:flex;flex-direction:column;z-index:200;
+  position:fixed;top:58px;left:0;bottom:0;
+  width:240px;background:#fff;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  z-index:200;overflow:hidden;
   transition:width .22s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;
-  box-shadow:2px 0 16px rgba(0,0,0,.06);
+  box-shadow:2px 0 12px rgba(0,0,0,.06);
 }
-.sidebar.collapsed{width:62px}
-/* Hide inner toggle text when collapsed, show expand icon */
-.sidebar.collapsed #sb-inner-toggle{
-  font-size:14px;
-}
-/* Hide sb-info when collapsed */
-.sidebar-overlay{
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.3);z-index:190;
-}
+.sidebar.collapsed{ width:64px; }
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:190}
 .sidebar-overlay.show{display:block}
 
-/* Profile block */
+/* Profile */
 .sb-profile{
-  padding:16px;background:linear-gradient(135deg,#1E3A5F,#1565C0);
-  display:flex;align-items:center;gap:11px;flex-shrink:0;
-  min-height:72px;
+  height:64px;padding:0 14px;flex-shrink:0;
+  background:linear-gradient(135deg,#1E3A5F,#1565C0);
+  display:flex;align-items:center;gap:10px;overflow:hidden;
 }
+.sidebar.collapsed .sb-profile{ padding:0;justify-content:center; }
 .sb-avatar{
-  width:38px;height:38px;border-radius:10px;flex-shrink:0;
-  background:rgba(255,255,255,.22);
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.3);
   display:flex;align-items:center;justify-content:center;
-  font-weight:900;color:#fff;font-size:16px;
-  border:2px solid rgba(255,255,255,.3);
+  font-weight:900;color:#fff;font-size:15px;
 }
-.sb-info{overflow:hidden;transition:opacity .2s,width .2s;white-space:nowrap}
-.sb-store-nm{font-size:13px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis}
-.sb-user-nm{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;overflow:hidden;text-overflow:ellipsis}
-.sidebar.collapsed .sb-info{opacity:0;width:0;overflow:hidden}
+.sb-info{
+  flex:1;overflow:hidden;
+  transition:opacity .18s, max-width .22s cubic-bezier(.4,0,.2,1);
+  max-width:160px;
+}
+.sb-store-nm{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-nm{font-size:10px;color:rgba(255,255,255,.6);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar.collapsed .sb-info{ opacity:0;max-width:0; }
+/* Inner toggle arrow */
+#sb-inner-toggle{
+  width:24px;height:24px;border-radius:6px;flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.12);color:#fff;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:300;line-height:1;
+  transition:background .15s,opacity .18s,max-width .22s;
+  max-width:24px;overflow:hidden;
+}
+#sb-inner-toggle:hover{ background:rgba(255,255,255,.28); }
+.sidebar.collapsed #sb-inner-toggle{ opacity:0;max-width:0;pointer-events:none; }
 
-/* Nav */
-.sb-nav{flex:1;overflow-y:auto;padding:10px 8px;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.sb-nav::-webkit-scrollbar{width:4px}
+/* Nav area */
+.sb-nav{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:8px 6px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.sb-nav::-webkit-scrollbar{width:3px}
 .sb-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 
+/* Group label */
 .sb-group-label{
-  font-size:9px;font-weight:800;letter-spacing:1.2px;
-  text-transform:uppercase;color:var(--text3);
-  padding:10px 10px 5px;white-space:nowrap;
-  transition:opacity .2s;
+  font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  color:var(--text3);padding:10px 8px 4px;white-space:nowrap;overflow:hidden;
+  transition:opacity .15s, max-height .22s, padding .22s cubic-bezier(.4,0,.2,1);
+  max-height:28px;
 }
-.sidebar.collapsed .sb-group-label{opacity:0;height:0;padding:0;overflow:hidden}
+.sidebar.collapsed .sb-group-label{ opacity:0;max-height:0;padding:0; }
 
+/* Nav item */
 .nav-link{
-  display:flex;align-items:center;gap:11px;
-  padding:10px 10px;border-radius:10px;
+  display:flex;align-items:center;gap:10px;
+  padding:8px 8px;border-radius:9px;
   color:var(--text2);font-size:13px;font-weight:500;
-  cursor:pointer;transition:.16s;border:none;background:transparent;
-  width:100%;text-align:left;white-space:nowrap;
-  margin-bottom:2px;position:relative;
+  cursor:pointer;transition:.14s;
+  border:none;background:transparent;
+  width:100%;text-align:left;
+  margin-bottom:1px;position:relative;overflow:hidden;
 }
-.nav-link:hover{background:#F0F7FF;color:var(--primary)}
+.nav-link:hover{ background:#F0F7FF; }
 .nav-link.active{
   background:linear-gradient(135deg,#E3F2FD,#BBDEFB);
   color:var(--primary);font-weight:700;
-  box-shadow:0 2px 8px rgba(33,150,243,.15);
 }
-.nav-link.active .nl-icon svg{stroke:var(--primary)}
+.sidebar.collapsed .nav-link{
+  padding:10px;justify-content:center;gap:0;
+}
+
+/* Icon */
 .nl-icon{
   width:28px;height:28px;border-radius:8px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:transparent;transition:.16s;
+  display:flex;align-items:center;justify-content:center;transition:.14s;
 }
-.nav-link:hover .nl-icon{background:rgba(33,150,243,.1)}
-.nav-link.active .nl-icon{background:rgba(33,150,243,.15)}
-.nl-icon svg{stroke:var(--text2);transition:.16s}
-.nl-label{transition:opacity .18s,width .18s;overflow:hidden}
-.sidebar.collapsed .nl-label{opacity:0;width:0}
-.sidebar.collapsed .nav-link{padding:10px;justify-content:center}
-.sidebar.collapsed .nav-link .nl-icon{width:36px;height:36px;border-radius:10px}
-.sidebar.collapsed .nav-link:hover .nl-icon{background:var(--primary-light)}
-.sidebar.collapsed .nav-link.active .nl-icon{background:linear-gradient(135deg,#2196F3,#1976D2);box-shadow:0 4px 12px rgba(33,150,243,.35)}
-.sidebar.collapsed .nav-link.active .nl-icon svg{stroke:#fff}
+.nl-icon svg{ stroke:var(--text2);transition:.14s; }
+.nav-link:hover .nl-icon svg,.nav-link.active .nl-icon svg{ stroke:var(--primary); }
+.sidebar.collapsed .nav-link .nl-icon{ width:38px;height:38px;border-radius:10px; }
+.sidebar.collapsed .nav-link.active .nl-icon{
+  background:linear-gradient(135deg,#2196F3,#1976D2);
+  box-shadow:0 4px 12px rgba(33,150,243,.35);
+}
+.sidebar.collapsed .nav-link.active .nl-icon svg{ stroke:#fff; }
 
-/* Tooltip on collapsed */
+/* Label */
+.nl-label{
+  overflow:hidden;white-space:nowrap;
+  transition:opacity .15s, max-width .22s cubic-bezier(.4,0,.2,1);
+  max-width:160px;
+}
+.sidebar.collapsed .nl-label{ opacity:0;max-width:0; }
+
+/* Tooltip */
 .sidebar.collapsed .nav-link::after{
   content:attr(data-tooltip);
-  position:absolute;left:72px;top:50%;transform:translateY(-50%);
+  position:fixed;left:74px;
   background:#1A2332;color:#fff;
   font-size:12px;font-weight:600;
-  padding:6px 12px;border-radius:8px;
+  padding:5px 12px;border-radius:7px;
   white-space:nowrap;pointer-events:none;
-  opacity:0;transition:opacity .15s;z-index:500;
+  opacity:0;transition:opacity .12s;z-index:9999;
   box-shadow:0 4px 12px rgba(0,0,0,.2);
 }
-.sidebar.collapsed .nav-link::before{
-  content:'';position:absolute;left:65px;top:50%;transform:translateY(-50%);
-  border:5px solid transparent;border-right-color:#1A2332;
-  pointer-events:none;opacity:0;transition:opacity .15s;z-index:500;
-}
-.sidebar.collapsed .nav-link:hover::after,
-.sidebar.collapsed .nav-link:hover::before{opacity:1}
+.sidebar.collapsed .nav-link:hover::after{ opacity:1; }
 
-/* Logout button */
-.sb-footer{padding:8px;border-top:1px solid var(--border);flex-shrink:0}
-.sb-logout{color:var(--red)!important}
-.sb-logout .nl-icon svg{stroke:var(--red)!important}
-.sb-logout:hover{background:#FFF0F0!important;color:var(--red)!important}
+/* Footer */
+.sb-footer{ padding:6px;border-top:1px solid var(--border);flex-shrink:0; }
+.sb-logout{ color:var(--red)!important; }
+.sb-logout .nl-icon svg{ stroke:var(--red)!important; }
+.sb-logout:hover{ background:#FFF0F0!important; }
 
-/* ── APP BODY ───────────────────────────────────────────── */
-.app-body{
-  display:flex;margin-top:58px;flex:1;min-height:0;
-}
-
-/* Sidebar spacer */
+/* ── APP BODY ────────────────────────────────── */
+.app-body{ display:flex;margin-top:58px;flex:1;min-height:0; }
 .sidebar-spacer{
   width:240px;flex-shrink:0;
   transition:width .22s cubic-bezier(.4,0,.2,1);
 }
-.sidebar-spacer.collapsed{width:62px}
+.sidebar-spacer.collapsed{ width:64px; }
 
-/* Collapsed: show expand button at top as pill */
-.sidebar.collapsed .sb-profile{
-  justify-content:center;
-  padding:12px 0;
-}
-.sidebar.collapsed #sb-inner-toggle{
-  margin:0 auto;
-  width:36px;height:36px;border-radius:10px;font-size:16px;
-}
-/* Nav link collapse transition */
-.nl-label{
-  transition:opacity .15s, width .15s, max-width .22s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;white-space:nowrap;max-width:200px;
-}
-.sidebar.collapsed .nl-label{opacity:0;max-width:0;width:0}
 .page-content{flex:1;padding:22px 26px;overflow-y:auto;min-height:0;display:flex;flex-direction:column}
 .page{display:none;flex:1;min-height:0}
 .page.active{display:flex;flex-direction:column}
-#page-pos.active{padding:0;overflow:hidden;display:flex;flex-direction:column}
-.page.active{display:block}
+/* POS page — takes full space, no padding */
+#page-pos{padding:0!important}
+#page-pos.active{overflow:hidden;display:flex;flex-direction:column;flex:1}
+/* page-content when POS active — no padding, no scroll */
+.page-content:has(#page-pos.active){padding:0;overflow:hidden}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
 .page-title{font-size:21px;font-weight:800}
 .page-sub{font-size:13px;color:var(--text2);margin-top:2px}
@@ -369,11 +370,15 @@ tbody tr:hover{background:#F8FAFF}
 /* POS */
 /* POS layout — kasir murni */
 .pos-layout-new{
-  display:flex;height:calc(100vh - 58px);min-height:0;overflow:hidden;
+  display:flex;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
 }
 /* CENTER: Transaction */
 .pos-center{
   flex:1;display:flex;flex-direction:column;min-height:0;background:#F8FAFC;
+  overflow:hidden;
 }
 /* Topbar scan */
 .pos-scan-bar{
@@ -384,7 +389,7 @@ tbody tr:hover{background:#F8FAFF}
   box-shadow:0 1px 4px rgba(0,0,0,.05);
 }
 .scan-input-wrap{
-  flex:1;max-width:520px;
+  flex:1;max-width:560px;
   display:flex;align-items:center;gap:10px;
   background:#F0F7FF;border:2px solid var(--primary);
   border-radius:10px;padding:9px 14px;
@@ -394,7 +399,7 @@ tbody tr:hover{background:#F8FAFF}
   background:#fff;box-shadow:0 0 0 3px rgba(33,150,243,.15);
 }
 .scan-input-wrap input{
-  flex:1;border:none;outline:none;font-size:15px;font-weight:700;
+  flex:1;border:none;outline:none;font-size:14px;font-weight:700;
   color:var(--text);background:transparent;
   letter-spacing:.3px;
 }
@@ -415,13 +420,16 @@ tbody tr:hover{background:#F8FAFF}
 .txn-row:hover{background:#F8FAFF}
 .txn-row:nth-child(even){background:#FAFBFC}
 .txn-row:nth-child(even):hover{background:#F0F7FF}
-/* RIGHT: Payment panel */
+/* RIGHT: Payment panel — scrollable internally */
 .pos-payment{
-  width:310px;flex-shrink:0;
+  width:300px;flex-shrink:0;
   display:flex;flex-direction:column;
   background:#fff;border-left:1px solid var(--border);
-  min-height:0;overflow:hidden;
+  min-height:0;overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
 }
+.pos-payment::-webkit-scrollbar{width:3px}
+.pos-payment::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 
 
 /* CART */
@@ -1004,8 +1012,8 @@ tbody tr:hover{background:#F8FAFF}
             </div>
           </div>
 
-          <!-- TOTAL BESAR + Bayar -->
-          <div style="margin-top:auto;padding:16px 14px 14px;background:linear-gradient(160deg,#1565C0 0%,#2196F3 100%);flex-shrink:0">
+          <!-- TOTAL BESAR + Bayar — sticky di bawah -->
+          <div style="padding:16px 14px 14px;background:linear-gradient(160deg,#1565C0 0%,#2196F3 100%);flex-shrink:0;position:sticky;bottom:0">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
               <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.6px">Total Bayar</span>
               <span style="font-size:11px;color:rgba(255,255,255,.5)" id="cart-item-count">0 item</span>
@@ -1188,33 +1196,53 @@ tbody tr:hover{background:#F8FAFF}
 
 <!-- Payment -->
 <div class="modal-overlay" id="modal-payment">
-  <div class="modal">
-    <div class="modal-header"><div class="modal-title">💳 Proses Pembayaran</div><button class="modal-close" onclick="closeModal('modal-payment')">✕</button></div>
-    <div style="background:var(--bg);border-radius:var(--rs);padding:13px;margin-bottom:12px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:3px">Total yang harus dibayar</div>
-      <div style="font-size:28px;font-weight:900;color:var(--primary)" id="pay-total-display">Rp 0</div>
-      <div style="font-size:12px;color:var(--text2);margin-top:4px">Termasuk PPN 12%: <span id="pay-ppn-display" style="color:#F59E0B;font-weight:700">Rp 0</span></div>
-      <div id="pay-member-info" style="display:none;margin-top:8px;padding:8px 10px;background:#E8F5E9;border-radius:8px;font-size:12px;color:#2E7D32">
-        &#127867; <strong id="pay-member-name"></strong> &middot; <span id="pay-member-tier"></span> &middot; &#11088; <span id="pay-member-pts-cur">0</span> poin &rarr; <strong id="pay-member-pts-new" style="color:#1B5E20">0</strong> poin setelah transaksi
+  <div class="modal" style="padding:0;display:flex;flex-direction:column;max-height:92vh;width:480px;max-width:96vw">
+    <!-- Header -->
+    <div class="modal-header" style="padding:18px 24px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div class="modal-title">💳 Proses Pembayaran</div>
+      <button class="modal-close" onclick="closeModal('modal-payment')">✕</button>
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+      <!-- Total -->
+      <div style="background:var(--bg);border-radius:var(--rs);padding:14px 16px">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Total yang harus dibayar</div>
+        <div style="font-size:30px;font-weight:900;color:var(--primary);line-height:1" id="pay-total-display">Rp 0</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:5px">Termasuk PPN 12%: <span id="pay-ppn-display" style="color:#F59E0B;font-weight:700">Rp 0</span></div>
+        <div id="pay-member-info" style="display:none;margin-top:8px;padding:8px 10px;background:#E8F5E9;border-radius:8px;font-size:12px;color:#2E7D32">
+          🎫 <strong id="pay-member-name"></strong> &middot; <span id="pay-member-tier"></span> &middot; ⭐ <span id="pay-member-pts-cur">0</span> → <strong id="pay-member-pts-new" style="color:#1B5E20">0</strong> poin
+        </div>
+        <div id="pay-promo-info" style="display:none;margin-top:6px;padding:8px 10px;background:#FFF3E0;border-radius:8px;font-size:12px;color:#E65100">
+          🎁 Promo: <strong id="pay-promo-name-display"></strong> &bull; Hemat <span id="pay-promo-disc-display" style="font-weight:700"></span>
+        </div>
       </div>
-      <div id="pay-promo-info" style="display:none;margin-top:6px;padding:8px 10px;background:#FFF3E0;border-radius:8px;font-size:12px;color:#E65100">
-        &#127873; Promo: <strong id="pay-promo-name-display"></strong> &bull; Hemat <span id="pay-promo-disc-display" style="font-weight:700;color:#BF360C"></span>
+
+      <!-- Metode -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Metode Pembayaran</div>
+        <div class="pay-method-grid">
+          <div class="pay-btn sel" onclick="selPay('Tunai',this)"><span class="pi">💵</span>Tunai</div>
+          <div class="pay-btn" onclick="selPay('Transfer',this)"><span class="pi">🏦</span>Transfer Bank</div>
+          <div class="pay-btn" onclick="selPay('QRIS',this)"><span class="pi">📱</span>QRIS</div>
+          <div class="pay-btn" onclick="selPay('Kartu',this)"><span class="pi">💳</span>Kartu Debit/Kredit</div>
+        </div>
+      </div>
+
+      <!-- Uang diterima (tunai) -->
+      <div id="cash-section">
+        <div class="form-group" style="margin-bottom:10px">
+          <label>Uang Diterima</label>
+          <input type="number" id="pay-cash" placeholder="0" oninput="calcChange()" style="font-size:16px;padding:11px 13px;font-weight:700">
+        </div>
+        <div class="change-display"><span>Kembalian</span><span id="pay-change">Rp 0</span></div>
       </div>
     </div>
-    <div style="margin-bottom:12px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Metode Pembayaran</div>
-    <div class="pay-method-grid">
-      <div class="pay-btn sel" onclick="selPay('Tunai',this)"><span class="pi">💵</span>Tunai</div>
-      <div class="pay-btn" onclick="selPay('Transfer',this)"><span class="pi">🏦</span>Transfer Bank</div>
-      <div class="pay-btn" onclick="selPay('QRIS',this)"><span class="pi">📱</span>QRIS</div>
-      <div class="pay-btn" onclick="selPay('Kartu',this)"><span class="pi">💳</span>Kartu Debit/Kredit</div>
-    </div>
-    <div id="cash-section">
-      <div class="form-group" style="margin-bottom:10px"><label>Uang Diterima</label><input type="number" id="pay-cash" placeholder="0" oninput="calcChange()" style="font-size:15px;padding:11px 13px"></div>
-      <div class="change-display"><span>Kembalian</span><span id="pay-change">Rp 0</span></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-payment')">Batal</button>
-      <button class="btn btn-success" onclick="processPayment()" style="padding:11px 26px">✓ Konfirmasi Bayar</button>
+
+    <!-- Footer — always visible -->
+    <div style="padding:14px 24px;border-top:1px solid var(--border);background:#fff;display:flex;gap:10px;flex-shrink:0;border-radius:0 0 16px 16px">
+      <button class="btn btn-outline" onclick="closeModal('modal-payment')" style="flex:1">Batal</button>
+      <button class="btn btn-success" onclick="processPayment()" style="flex:2;padding:12px;font-size:14px">✓ Konfirmasi Bayar</button>
     </div>
   </div>
 </div>
