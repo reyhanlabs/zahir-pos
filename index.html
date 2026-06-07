@@ -1997,6 +1997,8 @@ function initChart(){
 let catFilter='all';
 
 function renderPOS(){
+  const grid = document.getElementById('pos-grid');
+  if(!grid) return; // POS page tidak aktif, skip
   const search=(v('pos-search')||'').toLowerCase();
   // Include out-of-stock but show greyed out
   let f = search
@@ -2353,21 +2355,30 @@ async function processPayment(){
     showReceipt(txn);
     // Reset cart
     cart=[];
-    document.getElementById('disc-pct').value=0;
-    document.getElementById('cart-cust').value='';
-    document.getElementById('cart-member').value='';
-    const mbar=document.getElementById('member-info-bar'); if(mbar) mbar.style.display='none';
+    const discEl = document.getElementById('disc-pct'); if(discEl) discEl.value=0;
+    const custEl = document.getElementById('cart-cust'); if(custEl) custEl.value='';
+    const memEl  = document.getElementById('cart-member'); if(memEl) memEl.value='';
+    const mbar   = document.getElementById('member-info-bar'); if(mbar) mbar.style.display='none';
+    // Reset scan input
+    const scanEl = document.getElementById('pos-scan-input'); if(scanEl){ scanEl.value=''; scanEl.focus(); }
+    // Reset member/promo labels
+    const mLabel = document.getElementById('member-dd-label'); if(mLabel) mLabel.textContent='-- Tanpa Member --';
+    const pLabel = document.getElementById('promo-dd-label'); if(pLabel) pLabel.textContent='-- Pilih --';
+    const cLabel = document.getElementById('cust-dd-label');  if(cLabel) cLabel.textContent='-- Tanpa --';
     clearPromo();
-    renderCart(); renderPOS();
+    renderCart();
     await loadTransactions(); renderDashboard(); initChart();
   }catch(e){ alert('Gagal: '+e.message); }
 }
 
 function showReceipt(txn){
-  const rec=payMethod==='Tunai'?parseFloat(v('pay-cash'))||txn.total:txn.total;
-  const ch=rec-txn.total;
-  const d=new Date();
-  document.getElementById('receipt-content').innerHTML=`
+  const cashInput = document.getElementById('pay-cash');
+  const rec = payMethod==='Tunai' ? (parseFloat(cashInput?.value)||txn.total) : txn.total;
+  const ch  = rec - txn.total;
+  const d   = new Date();
+  const rcEl = document.getElementById('receipt-content');
+  if(!rcEl){ console.warn('receipt-content not found'); return; }
+  rcEl.innerHTML=`
     <div class="r-header"><div style="font-size:14px">${storeData?.name||'TOKO'}</div><div style="font-size:10px;font-weight:normal">${storeData?.outlet||''}</div></div>
     <div class="r-divider"></div>
     <div class="r-row"><span>Faktur</span><span>${txn.invoiceNo}</span></div>
