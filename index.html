@@ -2008,7 +2008,6 @@ function renderPOS(){
   // Sort: in-stock first, then by name
   f.sort((a,b)=>(b.stock>0?1:0)-(a.stock>0?1:0)||(a.name||'').localeCompare(b.name||''));
 
-  const grid=document.getElementById('pos-grid');
   const countEl=document.getElementById('pos-count');
   const inStock=f.filter(p=>p.stock>0).length;
   if(countEl) countEl.textContent=`${inStock} produk`;
