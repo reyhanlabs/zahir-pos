@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background rounded square -->
+  <rect width="100" height="100" rx="22" ry="22" fill="#2B8CC4"/>
+
+  <!-- Z shape - matching Zahir logo style with diagonal cut -->
+  <g fill="white">
+    <!-- Top bar -->
+    <polygon points="22,20 78,20 78,32 22,32"/>
+    <!-- Diagonal stroke -->
+    <polygon points="64,32 78,32 36,68 22,68"/>
+    <!-- Bottom bar -->
+    <polygon points="22,68 78,68 78,80 22,80"/>
+    <!-- Fill diagonal body -->
+    <polygon points="22,20 78,20 78,32 64,32 36,68 22,68 22,80 78,80 78,68 36,68 64,32 22,32"/>
+  </g>
+
+  <!-- Subtle light reflection on Z (like the original) -->
+  <polygon points="22,20 50,20 36,68 22,68" fill="rgba(255,255,255,0.12)"/>
+</svg>
